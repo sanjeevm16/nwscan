@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetSentinel — Network Audit Dashboard</title>
+  <meta name="description" content="Real-time network audit, vulnerability detection, and drift analysis dashboard powered by MCP tools." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base:#070b14; --bg-card:rgba(255,255,255,0.04); --bg-card-hover:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.08); --border-glow:rgba(0,212,255,0.35);
+      --cyan:#00d4ff; --cyan-dim:rgba(0,212,255,0.12);
+      --purple:#8b5cf6; --purple-dim:rgba(139,92,246,0.12);
+      --green:#10b981; --green-dim:rgba(16,185,129,0.12);
+      --amber:#f59e0b; --amber-dim:rgba(245,158,11,0.12);
+      --red:#ef4444; --red-dim:rgba(239,68,68,0.12);
+      --orange:#f97316; --orange-dim:rgba(249,115,22,0.12);
+      --pink:#ec4899; --pink-dim:rgba(236,72,153,0.12);
+      --text:#e2e8f0; --text-muted:#64748b; --text-faint:#334155;
+      --radius:14px; --radius-sm:8px;
+      --shadow:0 8px 32px rgba(0,0,0,0.5);
+      --glow-cyan:0 0 24px rgba(0,212,255,0.25);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:var(--bg-base);color:var(--text);min-height:100vh;overflow-x:hidden}
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:linear-gradient(rgba(0,212,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.04) 1px,transparent 1px);
+      background-size:48px 48px;animation:gridPan 30s linear infinite}
+    @keyframes gridPan{to{background-position:48px 48px}}
+    .bg-glow{position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:900px;height:600px;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse at center,rgba(0,212,255,0.06) 0%,transparent 70%)}
+    .layout{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 24px 80px}
+
+    /* Header */
+    .header{display:flex;align-items:center;justify-content:space-between;padding:28px 0 32px;border-bottom:1px solid var(--border);margin-bottom:36px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--cyan) 0%,var(--purple) 100%);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:var(--glow-cyan)}
+    .brand-name{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+    .brand-name span{color:var(--cyan)}
+    .brand-sub{font-size:12px;color:var(--text-muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+    .header-right{display:flex;align-items:center;gap:16px}
+    .server-badge{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg-card);font-size:13px;color:var(--text-muted)}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--text-faint);transition:background .4s,box-shadow .4s}
+    .dot.online{background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+    .dot.offline{background:var(--red)}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+    .time-display{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-muted)}
+
+    /* IP Range Bar */
+    .target-bar{display:flex;align-items:center;gap:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:36px;flex-wrap:wrap}
+    .target-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
+    .target-input-wrap{flex:1;min-width:240px;position:relative}
+    .target-input{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px 10px 38px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+    .target-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,0.12)}
+    .target-input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+    .target-presets{display:flex;gap:8px;flex-wrap:wrap}
+    .preset-btn{padding:6px 12px;border-radius:6px;font-size:12px;font-family:'JetBrains Mono',monospace;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);color:var(--cyan);cursor:pointer;transition:all .2s;white-space:nowrap}
+    .preset-btn:hover{background:rgba(0,212,255,0.15);border-color:var(--cyan)}
+    .target-validate{font-size:11px;font-family:'JetBrains Mono',monospace;padding:4px 10px;border-radius:4px;margin-left:auto}
+    .validate-ok{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+    .validate-warn{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+
+    /* Stats */
+    .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:36px}
+    .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:border-color .3s,background .3s}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--cyan));opacity:0.7}
+    .stat-card:hover{border-color:rgba(255,255,255,0.15);background:var(--bg-card-hover)}
+    .stat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .stat-value{font-size:28px;font-weight:700;line-height:1;color:var(--accent,var(--cyan))}
+    .stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px}
+
+    /* Section title */
+    .section-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+    .section-badge{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--cyan-dim);color:var(--cyan);font-family:'JetBrains Mono',monospace}
+
+    /* Tools grid – 3 cols for core, full-width for vuln */
+    .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:36px}
+    .vuln-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:36px}
+    .tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;gap:14px;transition:border-color .3s,transform .2s,box-shadow .3s}
+    .tool-card:hover{border-color:var(--card-color,var(--border-glow));transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+    .tool-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--icon-bg,var(--cyan-dim));border:1px solid var(--icon-border,rgba(0,212,255,.2))}
+    .tool-name{font-size:16px;font-weight:700}
+    .tool-desc{font-size:12px;color:var(--text-muted);line-height:1.6;flex:1}
+    .tool-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+    .tool-endpoint{padding:3px 8px;border-radius:5px;background:rgba(255,255,255,0.05);border:1px solid var(--border)}
+    .progress-bar-wrap{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;display:none}
+    .progress-bar-wrap.active{display:block}
+    .progress-bar{height:100%;width:35%;border-radius:2px;background:var(--card-color,var(--cyan))}
+    .progress-bar.indeterminate{animation:indeterminate 1.4s ease-in-out infinite}
+    @keyframes indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+    .tool-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+    .tool-status-dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint)}
+    .tool-status-dot.running{background:var(--amber);animation:pulse 1s infinite}
+    .tool-status-dot.success{background:var(--green)}
+    .tool-status-dot.error{background:var(--red)}
+
+    /* Vuln severity pill */
+    .sev-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+    .sev-critical{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+    .sev-high{background:rgba(249,115,22,.2);color:#fdba74;border:1px solid rgba(249,115,22,.3)}
+    .sev-medium{background:rgba(245,158,11,.2);color:#fde68a;border:1px solid rgba(245,158,11,.3)}
+    .sev-low{background:rgba(16,185,129,.2);color:#a7f3d0;border:1px solid rgba(16,185,129,.3)}
+    .sev-info{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-primary{background:linear-gradient(135deg,var(--card-color,var(--cyan)) 0%,var(--purple) 100%);color:#fff;box-shadow:0 4px 16px rgba(0,212,255,.15)}
+    .btn-primary:hover{opacity:.9;transform:scale(1.02)}
+    .btn-primary:active{transform:scale(.98)}
+    .btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+    .btn-ghost:hover{background:var(--bg-card-hover);color:var(--text);border-color:rgba(255,255,255,.2)}
+    .btn-danger{background:linear-gradient(135deg,var(--red),var(--orange));color:#fff}
+    .btn-danger:hover{opacity:.9}
+    .spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+    .spinner.active{display:block}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Results panel */
+    .results-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:28px}
+    .results-header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border)}
+    .results-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px}
+    .badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;background:var(--cyan-dim);color:var(--cyan);font-family:'JetBrains Mono',monospace}
+    .results-body{padding:22px;min-height:120px}
+    .results-empty{text-align:center;color:var(--text-muted);font-size:14px;padding:40px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .empty-icon{font-size:38px;opacity:.35}
+    .device-table{width:100%;border-collapse:collapse;font-size:12px}
+    .device-table th{text-align:left;padding:9px 12px;color:var(--text-muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
+    .device-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'JetBrains Mono',monospace;font-size:11px}
+    .device-table tr:last-child td{border-bottom:none}
+    .device-table tr:hover td{background:rgba(255,255,255,.025)}
+    .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;margin:1px}
+    .tag-port{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+    .tag-added{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+    .tag-removed{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+    .tag-new{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+    .tag-missing{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+    .drift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+    .drift-block{padding:14px 18px;border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .drift-count{font-size:26px;font-weight:700}
+    .drift-label{font-size:11px;color:var(--text-muted);margin-top:3px}
+    .raw-output{background:rgba(0,0,0,.35);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:var(--text-muted);white-space:pre-wrap;word-break:break-all;max-height:280px;overflow-y:auto}
+    .alert{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:var(--radius-sm);border-left:3px solid;margin-bottom:16px;font-size:13px}
+    .alert-icon{font-size:17px;flex-shrink:0;margin-top:-1px}
+    .alert-success{background:var(--green-dim);border-color:var(--green);color:#a7f3d0}
+    .alert-warning{background:var(--amber-dim);border-color:var(--amber);color:#fde68a}
+    .alert-error{background:var(--red-dim);border-color:var(--red);color:#fca5a5}
+    .alert-info{background:var(--cyan-dim);border-color:var(--cyan);color:#a5f3fc}
+
+    /* Vuln results */
+    .vuln-host-block{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:16px;overflow:hidden}
+    .vuln-host-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;transition:background .2s}
+    .vuln-host-header:hover{background:rgba(255,255,255,.05)}
+    .vuln-host-ip{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text)}
+    .vuln-host-name{font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+    .vuln-host-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+    .vuln-finding{padding:12px 14px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,.2)}
+    .vuln-finding-title{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .vuln-finding-desc{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:8px}
+    .vuln-ports{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+    .remediation-plan{margin-top:16px;padding:14px 16px;border-radius:var(--radius-sm);background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.12)}
+    .remediation-title{font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .remediation-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+    .remediation-list li{font-size:12px;color:var(--text-muted);padding-left:18px;position:relative;line-height:1.5}
+    .remediation-list li::before{content:'→';position:absolute;left:0;color:var(--cyan);font-size:11px}
+    .collapsible-body{display:none}
+    .collapsible-body.open{display:block}
+    .chevron{margin-left:auto;color:var(--text-faint);transition:transform .2s;font-size:12px}
+    .chevron.open{transform:rotate(90deg)}
+
+    /* Summary cards for vuln */
+    .vuln-summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+    .vuln-summary-card{padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center}
+    .vscard-val{font-size:22px;font-weight:700;line-height:1}
+    .vscard-lbl{font-size:11px;color:var(--text-muted);margin-top:4px}
+
+    /* Log panel */
+    .log-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .log-header{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .log-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+    .log-body{padding:14px 22px;max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
+    .log-entry{display:flex;align-items:flex-start;gap:10px;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0;transform:translateY(6px);animation:logIn .3s ease forwards}
+    @keyframes logIn{to{opacity:1;transform:none}}
+    .log-ts{color:var(--text-faint);flex-shrink:0}
+    .log-label{flex-shrink:0;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase}
+    .log-label-info{background:var(--cyan-dim);color:var(--cyan)}
+    .log-label-ok{background:var(--green-dim);color:var(--green)}
+    .log-label-warn{background:var(--amber-dim);color:var(--amber)}
+    .log-label-error{background:var(--red-dim);color:var(--red)}
+    .log-msg{color:var(--text-muted);flex:1}
+
+    /* Toast */
+    #toast-container{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+    .toast{display:flex;align-items:center;gap:12px;padding:13px 18px;border-radius:var(--radius-sm);background:#1e293b;border:1px solid var(--border);box-shadow:var(--shadow);font-size:13px;color:var(--text);animation:toastIn .3s cubic-bezier(.17,.67,.35,1.2) forwards;min-width:280px;max-width:380px;border-left:3px solid var(--cyan)}
+    @keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+    .toast.exit{animation:toastOut .25s ease forwards}
+    @keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+
+    /* Responsive */
+    @media(max-width:1100px){.vuln-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:800px){.tools-grid{grid-template-columns:1fr}.vuln-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.drift-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){.stats-row{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start;gap:14px}}
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div id="toast-container"></div>
+  <div class="layout">
+
+    <!-- ── Header ── -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div>
+          <div class="brand-name">Net<span>Sentinel</span></div>
+          <div class="brand-sub">Network-Audit · Vuln-Scanner · Drift-Detector · MCP v2.0</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="server-badge">
+          <div class="dot" id="server-dot"></div>
+          <span id="server-label">Connecting…</span>
+        </div>
+        <div class="time-display" id="clock"></div>
+        <button class="btn btn-ghost" onclick="checkHealth()" style="font-size:12px;padding:7px 13px;">⟳ Ping</button>
+      </div>
+    </header>
+
+    <!-- ── IP Range Input ── -->
+    <div class="target-bar" role="group" aria-label="Scan target configuration">
+      <span class="target-label">🎯 Target</span>
+      <div class="target-input-wrap">
+        <span class="target-input-icon">🌐</span>
+        <input
+          type="text"
+          id="target-input"
+          class="target-input"
+          value="172.17.0.1/24"
+          placeholder="e.g. 192.168.1.0/24 or 10.0.0.1-50 or 192.168.1.5"
+          spellcheck="false"
+          autocomplete="off"
+          oninput="validateTarget()"
+          aria-label="Target IP range or subnet"
+        />
+      </div>
+      <div class="target-presets" aria-label="Quick target presets">
+        <button class="preset-btn" onclick="setTarget('192.168.1.0/24')">192.168.1.0/24</button>
+        <button class="preset-btn" onclick="setTarget('10.0.0.0/24')">10.0.0.0/24</button>
+        <button class="preset-btn" onclick="setTarget('172.17.0.0/16')">172.17.0.0/16</button>
+        <button class="preset-btn" onclick="setTarget('192.168.1.1-50')">192.168.1.1-50</button>
+      </div>
+      <div class="target-validate validate-ok" id="target-validate">✓ Valid</div>
+    </div>
+
+    <!-- ── Stats Row ── -->
+    <div class="stats-row">
+      <div class="stat-card" style="--accent:var(--cyan)">
+        <div class="stat-label">Live Devices</div>
+        <div class="stat-value" id="stat-devices">—</div>
+        <div class="stat-sub">last scan result</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--green)">
+        <div class="stat-label">Baseline Size</div>
+        <div class="stat-value" id="stat-baseline">—</div>
+        <div class="stat-sub">approved devices</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--amber)">
+        <div class="stat-label">Drift Events</div>
+        <div class="stat-value" id="stat-drift">—</div>
+        <div class="stat-sub">last audit run</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--red)">
+        <div class="stat-label">Vuln Hosts</div>
+        <div class="stat-value" id="stat-vuln">—</div>
+        <div class="stat-sub">last vuln scan</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--purple)">
+        <div class="stat-label">Tool Runs</div>
+        <div class="stat-value" id="stat-runs">0</div>
+        <div class="stat-sub">this session</div>
+      </div>
+    </div>
+
+    <!-- ── Core MCP Tools ── -->
+    <div class="section-title">MCP Tools <span class="section-badge">CORE</span></div>
+    <div class="tools-grid">
+      <!-- Scan -->
+      <div class="tool-card" style="--card-color:var(--cyan);--icon-bg:var(--cyan-dim);--icon-border:rgba(0,212,255,.25)">
+        <div class="tool-icon">📡</div>
+        <div>
+          <div class="tool-name">Scan Network</div>
+          <div class="tool-desc">Fast nmap sweep of the target range. Discovers all active hosts, MACs, vendors, and open TCP ports.</div>
+        </div>
+        <div class="progress-bar-wrap" id="scan-progress-wrap"><div class="progress-bar indeterminate"></div></div>
+        <div class="tool-meta">
+          <div class="tool-status"><div class="tool-status-dot" id="scan-status-dot"></div><span id="scan-status-text">idle</span></div>
+          <span class="tool-endpoint">POST /scan</span>
+        </div>
+        <button class="btn btn-primary" id="btn-scan" onclick="runScan()">
+          <div class="spinner" id="scan-spinner"></div>
+          <span id="btn-scan-label">▶ Run Scan</span>
+        </button>
+      </div>
+
+      <!-- Audit -->
+      <div class="tool-card" style="--card-color:var(--purple);--icon-bg:var(--purple-dim);--icon-border:rgba(139,92,246,.25)">
+        <div class="tool-icon">🔍</div>
+        <div>
+          <div class="tool-name">Audit Network</div>
+          <div class="tool-desc">Compares live network state against the saved baseline. Reports new devices, missing hosts, and port changes.</div>
+        </div>
+        <div class="progress-bar-wrap" id="audit-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--purple),var(--cyan))"></div></div>
+        <div class="tool-meta">
+          <div class="tool-status"><div class="tool-status-dot" id="audit-status-dot"></div><span id="audit-status-text">idle</span></div>
+          <span class="tool-endpoint">POST /audit</span>
+        </div>
+        <button class="btn btn-primary" id="btn-audit" onclick="runAudit()" style="background:linear-gradient(135deg,var(--purple),var(--cyan))">
+          <div class="spinner" id="audit-spinner"></div>
+          <span id="btn-audit-label">▶ Run Audit</span>
+        </button>
+      </div>
+
+      <!-- Baseline -->
+      <div class="tool-card" style="--card-color:var(--green);--icon-bg:var(--green-dim);--icon-border:rgba(16,185,129,.25)">
+        <div class="tool-icon">💾</div>
+        <div>
+          <div class="tool-name">Update Baseline</div>
+          <div class="tool-desc">Scans the network and saves the current live state as the new approved baseline configuration file.</div>
+        </div>
+        <div class="progress-bar-wrap" id="baseline-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
+        <div class="tool-meta">
+          <div class="tool-status"><div class="tool-status-dot" id="baseline-status-dot"></div><span id="baseline-status-text">idle</span></div>
+          <span class="tool-endpoint">POST /update-baseline</span>
+        </div>
+        <button class="btn btn-primary" id="btn-baseline" onclick="runUpdateBaseline()" style="background:linear-gradient(135deg,var(--green),var(--cyan))">
+          <div class="spinner" id="baseline-spinner"></div>
+          <span id="btn-baseline-label">▶ Update Baseline</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Vulnerability Scanners ── -->
+    <div class="section-title">Vulnerability Scanners <span class="section-badge">NEW</span></div>
+    <div class="vuln-grid">
+      <!-- UDP Anomaly -->
+      <div class="tool-card" style="--card-color:var(--red);--icon-bg:var(--red-dim);--icon-border:rgba(239,68,68,.25)">
+        <div class="tool-icon">📶</div>
+        <div>
+          <div class="tool-name">UDP Port Anomaly</div>
+          <div class="tool-desc">Scans for dangerous open UDP services: TFTP, SNMP, UPnP, Memcached, IPMI and more. Classifies CRITICAL / HIGH / MEDIUM risk with fix plans.</div>
+        </div>
+        <div class="progress-bar-wrap" id="udp-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--red),var(--orange))"></div></div>
+        <div class="tool-meta">
+          <div class="tool-status"><div class="tool-status-dot" id="udp-status-dot"></div><span id="udp-status-text">idle</span></div>
+          <span class="tool-endpoint">POST /vuln/udp</span>
+        </div>
+        <button class="btn btn-primary" id="btn-udp" onclick="runVulnUDP()" style="background:linear-gradient(135deg,var(--red),var(--orange))">
+          <div class="spinner" id="udp-spinner"></div>
+          <span id="btn-udp-label">▶ Scan UDP</span>
+        </button>
+      </div>
+
+      <!-- OS Fingerprint -->
+      <div class="tool-card" style="--card-color:var(--orange);--icon-bg:var(--orange-dim);--icon-border:rgba(249,115,22,.25)">
+        <div class="tool-icon">🖥️</div>
+        <div>
+          <div class="tool-name">OS Fingerprinting</div>
+          <div class="tool-desc">Uses nmap OS detection to identify host operating systems and flags EOL systems (Windows XP/7, CentOS 6, Ubuntu 16, etc.) with upgrade roadmap.</div>
+        </div>
+        <div class="progress-bar-wrap" id="os-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--orange),var(--amber))"></div></div>
+        <div class="tool-meta">
+          <div class="tool-status"><div class="tool-status-dot" id="os-status-dot"></div><span id="os-status-text">idle</span></div>
+          <span class="tool-endpoint">POST /vuln/os</span>
+        </div>
+        <button class="btn btn-primary" id="btn-os" onclick="runVulnOS()" style="background:linear-gradient(135deg,var(--orange),var(--amber))">
+          <div class="spinner" id="os-spinner"></div>
+          <span id="btn-os-label">▶ Fingerprint OS</span>
+        </button>
+      </div>
+
+      <!-- Firewall / IDS Evasion -->
+      <div class="tool-card" style="--card-color:var(--pink);--icon-bg:var(--pink-dim);--icon-border:rgba(236,72,153,.25)">
+        <div class="tool-icon">🔥</div>
+        <div>
+          <div class="tool-name">Firewall &amp; IDS Evasion</div>
+          <div class="tool-desc">Tests FIN/NULL/Xmas scans, fragmented packets, and source-port spoofing to detect firewall bypasses and IDS blind spots. Produces hardening roadmap.</div>
+        </div>
+        <div class="progress-bar-wrap" id="fw-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div>
+        <div class="tool-meta">
+          <div class="tool-status"><div class="tool-status-dot" id="fw-status-dot"></div><span id="fw-status-text">idle</span></div>
+          <span class="tool-endpoint">POST /vuln/firewall</span>
+        </div>
+        <button class="btn btn-primary" id="btn-fw" onclick="runVulnFirewall()" style="background:linear-gradient(135deg,var(--pink),var(--purple))">
+          <div class="spinner" id="fw-spinner"></div>
+          <span id="btn-fw-label">▶ Test Evasion</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Results ── -->
+    <div class="section-title">Results</div>
+    <div class="results-panel">
+      <div class="results-header">
+        <div class="results-title">
+          <span id="results-tool-name">Output</span>
+          <span class="badge" id="results-badge">—</span>
+        </div>
+        <button class="btn btn-ghost" onclick="clearResults()" style="font-size:12px;padding:6px 11px;">✕ Clear</button>
+      </div>
+      <div class="results-body" id="results-body">
+        <div class="results-empty">
+          <div class="empty-icon">🌐</div>
+          <span>Run a tool above to see results here</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Activity Log ── -->
+    <div class="log-panel">
+      <div class="log-header">
+        <div class="log-title">📋 Activity Log</div>
+        <button class="btn btn-ghost" onclick="clearLog()" style="font-size:12px;padding:6px 11px;">Clear</button>
+      </div>
+      <div class="log-body" id="log-body">
+        <div class="log-entry" style="opacity:1;transform:none">
+          <span class="log-ts">--:--:--</span>
+          <span class="log-label log-label-info">INFO</span>
+          <span class="log-msg">NetSentinel v2.0 loaded. Waiting for server…</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .layout -->
+
+  <script>
+    const API = 'http://localhost:8000';
+    let totalRuns = 0;
+
+    // ── Clock ────────────────────────────────────────────────────────────────
+    function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false})}
+    setInterval(updateClock,1000);updateClock();
+
+    // ── Target helpers ───────────────────────────────────────────────────────
+    function getTarget(){return document.getElementById('target-input').value.trim()||'172.17.0.1/24'}
+    function setTarget(val){document.getElementById('target-input').value=val;validateTarget()}
+    function validateTarget(){
+      const v=document.getElementById('target-input').value.trim();
+      const el=document.getElementById('target-validate');
+      const cidr=/^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/;
+      const range=/^(\d{1,3}\.){3}\d{1,3}-\d{1,3}$/;
+      const single=/^(\d{1,3}\.){3}\d{1,3}$/;
+      const hostname=/^[a-zA-Z0-9._-]+$/;
+      if(cidr.test(v)||range.test(v)||single.test(v)||hostname.test(v)){
+        el.className='target-validate validate-ok';el.textContent='✓ Valid';
+      }else{
+        el.className='target-validate validate-warn';el.textContent='⚠ Check format';
+      }
+    }
+
+    // ── Health ───────────────────────────────────────────────────────────────
+    async function checkHealth(){
+      const dot=document.getElementById('server-dot'),label=document.getElementById('server-label');
+      try{
+        const r=await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});
+        if(r.ok){dot.className='dot online';label.textContent='Server Online';addLog('ok','Server health check passed');await fetchBaselineCount();}
+        else throw new Error();
+      }catch{dot.className='dot offline';label.textContent='Server Offline';addLog('error','Server unreachable — run: python network_audit_server.py');}
+    }
+
+    async function fetchBaselineCount(){
+      try{const r=await fetch(API+'/baseline');const d=await r.json();document.getElementById('stat-baseline').textContent=d.count??'?';}catch{}
+    }
+
+    // ── Core tool runners ────────────────────────────────────────────────────
+    async function runScan(){
+      const target=getTarget();
+      setToolState('scan','running','Scanning…');addLog('info',`mcp_scan_network("${target}") invoked`);
+      try{
+        const r=await fetch(API+'/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(60000)});
+        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        if(d.status==='success'){
+          const count=d.count??Object.keys(d.data||{}).length;
+          document.getElementById('stat-devices').textContent=count;
+          setToolState('scan','success','Done — '+count+' device(s)');
+          addLog('ok','Scan complete: '+count+' device(s) found');
+          renderScanResults(d.data);showToast('Scan Complete',count+' device(s) discovered','green');
+        }else throw new Error(d.message||'Scan failed');
+      }catch(e){setToolState('scan','error','Error');addLog('error','Scan failed: '+e.message);showToast('Scan failed',e.message,'red');renderError(e.message);}
+    }
+
+    async function runAudit(){
+      const target=getTarget();
+      setToolState('audit','running','Auditing…');addLog('info',`mcp_audit_network("${target}") invoked`);
+      try{
+        const r=await fetch(API+'/audit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(90000)});
+        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        if(d.status==='success'){
+          setToolState('audit','success','Done');addLog('ok','Audit complete');
+          if(d.data&&d.data.report){
+            const rep=d.data.report;
+            const n=Object.keys(rep.new_devices_detected||{}).length+Object.keys(rep.missing_devices||{}).length+Object.keys(rep.port_changes_detected||{}).length;
+            document.getElementById('stat-drift').textContent=n;
+            renderAuditResults(rep,d.raw);showToast('Drift Detected',n+' issue(s) found','amber');
+          }else{document.getElementById('stat-drift').textContent=0;renderAuditOk(d.raw);showToast('Audit Clean','No drift detected','green');}
+        }else throw new Error(d.message||'Audit failed');
+      }catch(e){setToolState('audit','error','Error');addLog('error','Audit failed: '+e.message);showToast('Audit failed',e.message,'red');renderError(e.message);}
+    }
+
+    async function runUpdateBaseline(){
+      const target=getTarget();
+      setToolState('baseline','running','Updating…');addLog('info',`mcp_update_baseline("${target}") invoked`);
+      try{
+        const r=await fetch(API+'/update-baseline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(90000)});
+        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        if(d.status==='success'){
+          setToolState('baseline','success','Updated');addLog('ok','Baseline updated: '+d.message);
+          showToast('Baseline Saved',d.message,'green');await fetchBaselineCount();renderBaselineResult(d.message);
+        }else throw new Error(d.message||'Update failed');
+      }catch(e){setToolState('baseline','error','Error');addLog('error','Baseline update failed: '+e.message);showToast('Update failed',e.message,'red');renderError(e.message);}
+    }
+
+    // ── Vulnerability runners ────────────────────────────────────────────────
+    async function runVulnUDP(){
+      const target=getTarget();
+      setToolState('udp','running','Scanning UDP…');addLog('info',`detect_udp_anomalies("${target}") invoked`);
+      try{
+        const r=await fetch(API+'/vuln/udp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(180000)});
+        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        if(d.status==='success'){
+          const vhosts=d.data.hosts_with_findings||0;
+          document.getElementById('stat-vuln').textContent=vhosts;
+          setToolState('udp','success',vhosts+' host(s) flagged');
+          addLog(vhosts?'warn':'ok',`UDP scan: ${vhosts} host(s) with dangerous ports`);
+          renderVulnResults('UDP Port Anomaly Detection','📶',d.data,'red');
+          showToast('UDP Scan Done',vhosts+' host(s) with dangerous UDP ports',vhosts?'red':'green');
+        }else throw new Error(d.message);
+      }catch(e){setToolState('udp','error','Error');addLog('error','UDP scan failed: '+e.message);showToast('UDP scan failed',e.message,'red');renderError(e.message);}
+    }
+
+    async function runVulnOS(){
+      const target=getTarget();
+      setToolState('os','running','Fingerprinting…');addLog('info',`detect_os_fingerprinting("${target}") invoked`);
+      try{
+        const r=await fetch(API+'/vuln/os',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(180000)});
+        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        if(d.status==='success'){
+          const vhosts=d.data.hosts_with_findings||0;
+          document.getElementById('stat-vuln').textContent=vhosts;
+          setToolState('os','success',vhosts+' host(s) flagged');
+          addLog(vhosts?'warn':'ok',`OS scan: ${vhosts} host(s) with risky OS`);
+          renderVulnResults('OS Fingerprinting','🖥️',d.data,'orange');
+          showToast('OS Scan Done',vhosts+' host(s) with risky OS',vhosts?'amber':'green');
+        }else throw new Error(d.message);
+      }catch(e){setToolState('os','error','Error');addLog('error','OS scan failed: '+e.message);showToast('OS scan failed',e.message,'red');renderError(e.message);}
+    }
+
+    async function runVulnFirewall(){
+      const target=getTarget();
+      setToolState('fw','running','Testing evasion…');addLog('info',`detect_firewall_ids_evasion("${target}") invoked`);
+      try{
+        const r=await fetch(API+'/vuln/firewall',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(240000)});
+        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        if(d.status==='success'){
+          const vhosts=d.data.hosts_with_findings||0;
+          document.getElementById('stat-vuln').textContent=vhosts;
+          setToolState('fw','success',vhosts+' host(s) flagged');
+          addLog(vhosts?'warn':'ok',`Firewall scan: ${vhosts} host(s) with bypass vulnerabilities`);
+          renderVulnResults('Firewall & IDS Evasion Detection','🔥',d.data,'pink');
+          showToast('Firewall Scan Done',vhosts+' host(s) with evasion bypass',vhosts?'red':'green');
+        }else throw new Error(d.message);
+      }catch(e){setToolState('fw','error','Error');addLog('error','Firewall scan failed: '+e.message);showToast('Firewall scan failed',e.message,'red');renderError(e.message);}
+    }
+
+    // ── Tool state ───────────────────────────────────────────────────────────
+    function setToolState(tool,state,label){
+      const btn=document.getElementById('btn-'+tool),spin=document.getElementById(tool+'-spinner');
+      const btnLbl=document.getElementById('btn-'+tool+'-label'),dot=document.getElementById(tool+'-status-dot');
+      const txt=document.getElementById(tool+'-status-text'),wrap=document.getElementById(tool+'-progress-wrap');
+      dot.className='tool-status-dot'+(state==='running'?' running':state==='success'?' success':state==='error'?' error':'');
+      txt.textContent=label;
+      if(state==='running'){btn.disabled=true;spin.classList.add('active');btnLbl.textContent=label;wrap.classList.add('active');}
+      else{btn.disabled=false;spin.classList.remove('active');btnLbl.textContent=state==='success'?'▶ Run Again':'▶ Retry';wrap.classList.remove('active');}
+    }
+
+    // ── Render helpers ───────────────────────────────────────────────────────
+    function renderScanResults(data){
+      setResultsHeader('Scan Network',Object.keys(data).length+' device(s)');
+      const ips=Object.keys(data);
+      if(!ips.length){setResultsBody('<div class="results-empty"><div class="empty-icon">📭</div><span>No devices found on subnet</span></div>');return;}
+      let rows='';
+      ips.forEach(ip=>{
+        const d=data[ip],ports=d.open_ports&&d.open_ports.length?d.open_ports.map(p=>'<span class="tag tag-port">'+p+'</span>').join(''):'<span style="color:var(--text-faint)">none</span>';
+        rows+='<tr><td>'+ip+'</td><td>'+(d.hostname||ip)+'</td><td style="color:var(--text-muted)">'+(d.mac||'?')+'</td><td style="color:var(--text-muted)">'+(d.vendor||'Unknown')+'</td><td>'+ports+'</td></tr>';
+      });
+      setResultsBody('<table class="device-table"><thead><tr><th>IP Address</th><th>Hostname</th><th>MAC</th><th>Vendor</th><th>Open Ports</th></tr></thead><tbody>'+rows+'</tbody></table>');
+    }
+
+    function renderAuditOk(raw){
+      setResultsHeader('Audit Network','CLEAN');
+      setResultsBody('<div class="alert alert-success"><div class="alert-icon">✓</div><span>'+(raw||'No drift detected.')+'</span></div>');
+    }
+
+    function renderAuditResults(report,raw){
+      const newDev=report.new_devices_detected||{},missing=report.missing_devices||{},changed=report.port_changes_detected||{};
+      const total=Object.keys(newDev).length+Object.keys(missing).length+Object.keys(changed).length;
+      setResultsHeader('Audit Network',total+' issue(s)');
+      let html='<div class="alert alert-warning"><div class="alert-icon">⚠️</div><span><strong>Drift Detected</strong> — '+total+' issue(s) found.</span></div>'
+        +'<div class="drift-grid">'
+        +'<div class="drift-block" style="background:var(--amber-dim);border-color:rgba(245,158,11,.3)"><div class="drift-count" style="color:var(--amber)">'+Object.keys(newDev).length+'</div><div class="drift-label">New Devices</div></div>'
+        +'<div class="drift-block" style="background:var(--red-dim);border-color:rgba(239,68,68,.3)"><div class="drift-count" style="color:var(--red)">'+Object.keys(missing).length+'</div><div class="drift-label">Missing Devices</div></div>'
+        +'<div class="drift-block" style="background:var(--purple-dim);border-color:rgba(139,92,246,.3)"><div class="drift-count" style="color:var(--purple)">'+Object.keys(changed).length+'</div><div class="drift-label">Port Changes</div></div>'
+        +'</div>';
+      if(Object.keys(newDev).length){
+        html+='<div style="margin-bottom:18px"><div class="section-title" style="font-size:12px;margin-bottom:10px">New Devices Detected</div><table class="device-table"><thead><tr><th>IP</th><th>MAC</th><th>Vendor</th><th>Open Ports</th></tr></thead><tbody>';
+        for(const[ip,info]of Object.entries(newDev)){const ports=(info.open_ports||[]).map(p=>'<span class="tag tag-new">'+p+'</span>').join('')||'none';html+='<tr><td>'+ip+' <span class="tag tag-new">NEW</span></td><td>'+(info.mac||'?')+'</td><td>'+(info.vendor||'?')+'</td><td>'+ports+'</td></tr>';}
+        html+='</tbody></table></div>';
+      }
+      if(Object.keys(missing).length){
+        html+='<div style="margin-bottom:18px"><div class="section-title" style="font-size:12px;margin-bottom:10px">Missing Devices</div><table class="device-table"><thead><tr><th>IP</th><th>MAC</th><th>Last Known Ports</th></tr></thead><tbody>';
+        for(const[ip,info]of Object.entries(missing)){const ports=(info.open_ports||[]).map(p=>'<span class="tag tag-removed">'+p+'</span>').join('')||'none';html+='<tr><td>'+ip+' <span class="tag tag-missing">MISSING</span></td><td>'+(info.mac||'?')+'</td><td>'+ports+'</td></tr>';}
+        html+='</tbody></table></div>';
+      }
+      if(Object.keys(changed).length){
+        html+='<div style="margin-bottom:18px"><div class="section-title" style="font-size:12px;margin-bottom:10px">Port Changes</div><table class="device-table"><thead><tr><th>IP</th><th>MAC</th><th>Added Ports</th><th>Closed Ports</th></tr></thead><tbody>';
+        for(const[ip,info]of Object.entries(changed)){const added=(info.added_ports||[]).map(p=>'<span class="tag tag-added">'+p+'</span>').join('')||'none',removed=(info.closed_ports||[]).map(p=>'<span class="tag tag-removed">'+p+'</span>').join('')||'none';html+='<tr><td>'+ip+'</td><td>'+(info.mac||'?')+'</td><td>'+added+'</td><td>'+removed+'</td></tr>';}
+        html+='</tbody></table></div>';
+      }
+      html+='<details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);user-select:none">Raw JSON Response</summary><div class="raw-output" style="margin-top:8px">'+escHtml(raw||'')+'</div></details>';
+      setResultsBody(html);
+    }
+
+    function renderVulnResults(title, icon, data, accentColor){
+      const findings = data.findings||{};
+      const hosts = Object.keys(findings);
+      const plan = data.remediation_plan||[];
+      const techniques = data.techniques_used||[];
+
+      setResultsHeader(title, (data.hosts_with_findings||0)+' host(s) flagged');
+
+      // Count severities
+      let critical=0,high=0,medium=0,info=0;
+      hosts.forEach(h=>{
+        const vulns = findings[h].vulnerabilities || findings[h].issues || [];
+        vulns.forEach(v=>{
+          const sev=(v.risk||v.severity||'').toUpperCase();
+          if(sev==='CRITICAL')critical++;
+          else if(sev==='HIGH')high++;
+          else if(sev==='MEDIUM')medium++;
+          else info++;
+        });
+      });
+
+      let html='';
+
+      if(techniques.length){
+        html+='<div class="alert alert-info"><div class="alert-icon">🔬</div><span><strong>Techniques:</strong> '+escHtml(techniques.join(' · '))+'</span></div>';
+      }
+
+      if(!hosts.length){
+        html+='<div class="alert alert-success"><div class="alert-icon">✓</div><span>No vulnerabilities found with this scan type.</span></div>';
+      } else {
+        html+='<div class="alert alert-warning"><div class="alert-icon">⚠️</div><span><strong>'+hosts.length+' host(s)</strong> with findings detected.</span></div>';
+        html+='<div class="vuln-summary-row">'
+          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--red)">'+critical+'</div><div class="vscard-lbl">Critical</div></div>'
+          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--orange)">'+high+'</div><div class="vscard-lbl">High</div></div>'
+          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--amber)">'+medium+'</div><div class="vscard-lbl">Medium</div></div>'
+          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--cyan)">'+info+'</div><div class="vscard-lbl">Info</div></div>'
+          +'</div>';
+
+        hosts.forEach(ip=>{
+          const hd=findings[ip];
+          const vulns=hd.vulnerabilities||hd.issues||[];
+          const overallSev=(hd.overall_risk||'INFO').toUpperCase();
+          const sevCls=sevClass(overallSev);
+          const hostId='host-'+ip.replace(/\./g,'-');
+
+          html+='<div class="vuln-host-block">'
+            +'<div class="vuln-host-header" onclick="toggleCollapse(\''+hostId+'\')">'
+            +'<span class="sev-pill '+sevCls+'">'+overallSev+'</span>'
+            +'<span class="vuln-host-ip">'+escHtml(ip)+'</span>'
+            +'<span class="vuln-host-name">'+escHtml(hd.hostname||ip)+'</span>'
+            +'<span style="margin-left:auto;font-size:11px;color:var(--text-muted);font-family:monospace">'+vulns.length+' finding(s)</span>'
+            +'<span class="chevron" id="chev-'+hostId+'">▶</span>'
+            +'</div>'
+            +'<div class="collapsible-body open" id="'+hostId+'">'
+            +'<div class="vuln-host-body">';
+
+          vulns.forEach(v=>{
+            const sev2=(v.risk||v.severity||'INFO').toUpperCase();
+            const ports=(v.ports_exposed||[v.port].filter(Boolean)).map(p=>'<span class="tag tag-port">'+p+'</span>').join('');
+            const remediation=v.remediation||[];
+            html+='<div class="vuln-finding">'
+              +'<div class="vuln-finding-title"><span class="sev-pill '+sevClass(sev2)+'">'+sev2+'</span>'+escHtml(v.technique||v.service||('Port '+v.port))+'</div>'
+              +'<div class="vuln-finding-desc">'+escHtml(v.description||'')+'</div>';
+            if(ports) html+='<div class="vuln-ports">Ports: '+ports+'</div>';
+            if(remediation.length){
+              html+='<ul class="remediation-list">';
+              remediation.forEach(r=>{html+='<li>'+escHtml(r)+'</li>';});
+              html+='</ul>';
+            }
+            html+='</div>';
+          });
+
+          // Host-level remediation
+          if(hd.remediation&&hd.remediation.length){
+            html+='<div class="remediation-plan">'
+              +'<div class="remediation-title">🛠️ Host Remediation Steps</div>'
+              +'<ul class="remediation-list">';
+            hd.remediation.forEach(r=>{html+='<li>'+escHtml(r)+'</li>';});
+            html+='</ul></div>';
+          }
+          // EOL / OS info
+          if(hd.os_name){
+            html+='<div style="font-size:12px;color:var(--text-muted);font-family:monospace;margin-top:8px">OS: <strong style="color:var(--text)">'+escHtml(hd.os_name)+'</strong> ('+escHtml(hd.os_family)+') — '+hd.accuracy_pct+'% accuracy'+(hd.eol?' <span class="tag tag-removed">EOL</span>':'')+'</div>';
+            if(hd.eol_details) html+='<div style="font-size:11px;color:var(--amber);margin-top:4px">'+escHtml(hd.eol_details)+'</div>';
+          }
+
+          html+='</div></div></div>';
+        });
+      }
+
+      // Global remediation plan
+      if(plan.length){
+        html+='<div class="remediation-plan" style="margin-top:18px">'
+          +'<div class="remediation-title">📋 Global Remediation Plan</div>'
+          +'<ul class="remediation-list">';
+        plan.forEach(p=>{html+='<li>'+escHtml(p)+'</li>';});
+        html+='</ul></div>';
+      }
+
+      // Raw JSON toggle
+      html+='<details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);user-select:none">Raw JSON Response</summary><div class="raw-output" style="margin-top:8px">'+escHtml(JSON.stringify(data,null,2))+'</div></details>';
+      setResultsBody(html);
+    }
+
+    function sevClass(sev){
+      if(sev==='CRITICAL')return 'sev-critical';
+      if(sev==='HIGH')return 'sev-high';
+      if(sev==='MEDIUM')return 'sev-medium';
+      if(sev==='LOW')return 'sev-low';
+      return 'sev-info';
+    }
+
+    function toggleCollapse(id){
+      const body=document.getElementById(id);
+      const chev=document.getElementById('chev-'+id);
+      if(!body)return;
+      body.classList.toggle('open');
+      if(chev) chev.classList.toggle('open');
+    }
+
+    function renderBaselineResult(msg){setResultsHeader('Update Baseline','SAVED');setResultsBody('<div class="alert alert-success"><div class="alert-icon">💾</div><span>'+escHtml(msg)+'</span></div>');}
+    function renderError(msg){setResultsHeader('Error','ERR');setResultsBody('<div class="alert alert-error"><div class="alert-icon">❌</div><span>'+escHtml(msg)+'</span></div><p style="margin-top:12px;font-size:13px;color:var(--text-muted)">Start the server: <code style="font-family:monospace;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px">python network_audit_server.py</code></p>');}
+    function clearResults(){document.getElementById('results-tool-name').textContent='Output';document.getElementById('results-badge').textContent='—';document.getElementById('results-body').innerHTML='<div class="results-empty"><div class="empty-icon">🌐</div><span>Run a tool above to see results here</span></div>';}
+    function setResultsHeader(name,badge){document.getElementById('results-tool-name').textContent=name;document.getElementById('results-badge').textContent=badge;}
+    function setResultsBody(html){document.getElementById('results-body').innerHTML=html;}
+
+    // ── Log ──────────────────────────────────────────────────────────────────
+    function addLog(type,msg){
+      const body=document.getElementById('log-body'),entry=document.createElement('div');
+      entry.className='log-entry';
+      const ts=new Date().toLocaleTimeString('en-US',{hour12:false});
+      const cls={info:'log-label-info',ok:'log-label-ok',warn:'log-label-warn',error:'log-label-error'}[type]||'log-label-info';
+      entry.innerHTML='<span class="log-ts">'+ts+'</span><span class="log-label '+cls+'">'+type.toUpperCase()+'</span><span class="log-msg">'+escHtml(msg)+'</span>';
+      body.appendChild(entry);body.scrollTop=body.scrollHeight;
+      while(body.children.length>80)body.removeChild(body.firstChild);
+    }
+    function clearLog(){document.getElementById('log-body').innerHTML='';addLog('info','Log cleared');}
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    function showToast(title,msg,color){
+      const colorMap={green:'#10b981',red:'#ef4444',amber:'#f59e0b',cyan:'#00d4ff',purple:'#8b5cf6',orange:'#f97316',pink:'#ec4899'};
+      const el=document.createElement('div');el.className='toast';el.style.borderLeftColor=colorMap[color]||colorMap.cyan;
+      el.innerHTML='<div style="flex:1"><div style="font-weight:600;font-size:13px">'+escHtml(title)+'</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">'+escHtml(msg)+'</div></div>';
+      document.getElementById('toast-container').appendChild(el);
+      setTimeout(()=>{el.classList.add('exit');setTimeout(()=>el.remove(),300);},4800);
+    }
+
+    function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+    checkHealth();
+    setInterval(checkHealth,30000);
+  </script>
+</body>
+</html>

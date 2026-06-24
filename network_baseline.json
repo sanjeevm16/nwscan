@@ -1,0 +1,11 @@
+{
+    "172.17.0.1": {
+        "mac": "UNKNOWN_MAC",
+        "vendor": "Unknown Vendor",
+        "open_ports": [
+            22,
+            8000
+        ],
+        "hostname": "172.17.0.1"
+    }
+}

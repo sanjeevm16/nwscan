@@ -1,0 +1,169 @@
+INFO:     Started server process [3553]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:47934 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47934 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47934 - "GET /?authuser=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47934 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47934 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     10.88.0.3:34910 - "GET / HTTP/1.0" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:34926 - "GET /nice%20ports%2C/Trinity.txt.bak HTTP/1.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:34956 - "OPTIONS / HTTP/1.0" 405 Method Not Allowed
+INFO:     10.88.0.3:34964 - "OPTIONS / HTTP/1.0" 405 Method Not Allowed
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:35194 - "POST /sdk HTTP/1.1" 404 Not Found
+INFO:     10.88.0.3:35204 - "GET /nmaplowercheck1782178133 HTTP/1.1" 404 Not Found
+INFO:     10.88.0.3:35212 - "GET /evox/about HTTP/1.1" 404 Not Found
+INFO:     10.88.0.3:35228 - "GET /HNAP1 HTTP/1.1" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:35230 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42290 - "POST /scan HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42290 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42290 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43916 - "POST /vuln/udp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47560 - "POST /vuln/os HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47560 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47560 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47144 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47144 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58406 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58406 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46300 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44588 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44588 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35354 - "POST /vuln/firewall HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43094 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43094 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35702 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35702 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40384 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40384 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55304 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55304 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53494 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53494 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47804 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47804 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36540 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36540 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53038 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53038 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42096 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42096 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55106 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37302 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37302 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60932 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60932 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50464 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50464 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47730 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47730 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     10.88.0.3:49734 - "GET / HTTP/1.0" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:49738 - "GET /nice%20ports%2C/Trinity.txt.bak HTTP/1.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:49770 - "OPTIONS / HTTP/1.0" 405 Method Not Allowed
+INFO:     10.88.0.3:49784 - "OPTIONS / HTTP/1.0" 405 Method Not Allowed
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:50032 - "GET /nmaplowercheck1782178792 HTTP/1.1" 404 Not Found
+INFO:     10.88.0.3:50040 - "POST /sdk HTTP/1.1" 404 Not Found
+INFO:     10.88.0.3:50056 - "GET /evox/about HTTP/1.1" 404 Not Found
+INFO:     10.88.0.3:50068 - "GET /HNAP1 HTTP/1.1" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:     10.88.0.3:50082 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47730 - "POST /audit HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47730 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47730 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39250 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39250 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41158 - "POST /vuln/udp HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43970 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43970 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59988 - "POST /vuln/os HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55040 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55040 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44024 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44024 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39388 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39388 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49280 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49280 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39388 - "POST /vuln/firewall HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40270 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40270 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41686 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41686 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36628 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36628 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59694 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59694 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37956 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37956 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58412 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58412 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58568 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40458 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40458 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57602 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57602 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44358 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44358 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56650 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56650 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55860 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58884 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58884 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35118 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35118 - "GET /baseline HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56680 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56680 - "GET /baseline HTTP/1.1" 200 OK
