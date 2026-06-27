@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-nmap
+boto3
+mcp
+fastmcp
+pydantic
+quantcrypt
+adk

@@ -18,6 +18,12 @@ NMAP_PRIVILEGED = "--privileged " if os.getuid() != 0 else ""
 # Helpers
 # ---------------------------------------------------------------------------
 
+def _get_nmap_args(target: str, base_args: str) -> str:
+    """Detects if target is IPv6 and returns appropriate nmap arguments."""
+    ipv6_flag = "-6 " if ":" in target else ""
+    return f"{NMAP_PRIVILEGED}{ipv6_flag}{base_args}"
+
+
 def load_baseline() -> dict:
     """Loads the approved network baseline from a JSON file."""
     if os.path.exists(BASELINE_FILE):
@@ -44,7 +50,7 @@ def scan_network(target: str = DEFAULT_TARGET) -> dict:
     MAC address, vendor, hostname and open TCP ports.
     """
     nm = nmap.PortScanner()
-    nm.scan(hosts=target, arguments=f"{NMAP_PRIVILEGED}-F -sV -T4")
+    nm.scan(hosts=target, arguments=_get_nmap_args(target, "-F -sV -T4"))
 
     current_state = {}
     for host in nm.all_hosts():
@@ -178,7 +184,7 @@ def detect_udp_anomalies(target: str = DEFAULT_TARGET) -> dict:
     ports_arg = ",".join(str(p) for p in _SUSPICIOUS_UDP_PORTS)
     nm.scan(
         hosts=target,
-        arguments=f"{NMAP_PRIVILEGED}-sU -p {ports_arg} --open -T4 --max-retries 2",
+        arguments=_get_nmap_args(target, f"-sU -p {ports_arg} --open -T4 --max-retries 2"),
     )
 
     findings: dict = {}
@@ -306,7 +312,7 @@ def detect_os_fingerprinting(target: str = DEFAULT_TARGET) -> dict:
         Requires root/administrator privileges for raw-socket OS detection.
     """
     nm = nmap.PortScanner()
-    nm.scan(hosts=target, arguments=f"{NMAP_PRIVILEGED}-O -T4 --osscan-guess")
+    nm.scan(hosts=target, arguments=_get_nmap_args(target, "-O -T4 --osscan-guess"))
 
     findings: dict = {}
     for host in nm.all_hosts():
@@ -425,7 +431,7 @@ def detect_firewall_ids_evasion(target: str = DEFAULT_TARGET) -> dict:
     findings: dict = {}
 
     # -- Technique 1: SYN baseline ----------------------------------------
-    nm.scan(hosts=target, arguments=f"{NMAP_PRIVILEGED}-sS -p 22,80,443,3389,8080 -T4")
+    nm.scan(hosts=target, arguments=_get_nmap_args(target, "-sS -p 22,80,443,3389,8080 -T4"))
     syn_open: dict[str, set] = {}
     for host in nm.all_hosts():
         if nm[host].state() != "up":
@@ -437,7 +443,7 @@ def detect_firewall_ids_evasion(target: str = DEFAULT_TARGET) -> dict:
 
     # -- Technique 2: FIN scan (bypasses stateless ACLs) ------------------
     nm2 = nmap.PortScanner()
-    nm2.scan(hosts=target, arguments=f"{NMAP_PRIVILEGED}-sF -p 22,80,443,3389,8080 -T4")
+    nm2.scan(hosts=target, arguments=_get_nmap_args(target, "-sF -p 22,80,443,3389,8080 -T4"))
     fin_open: dict[str, set] = {}
     for host in nm2.all_hosts():
         if nm2[host].state() != "up":
@@ -450,7 +456,7 @@ def detect_firewall_ids_evasion(target: str = DEFAULT_TARGET) -> dict:
 
     # -- Technique 3: Fragmented packet scan ------------------------------
     nm3 = nmap.PortScanner()
-    nm3.scan(hosts=target, arguments=f"{NMAP_PRIVILEGED}-sS -f -p 22,80,443,3389,8080 -T4")
+    nm3.scan(hosts=target, arguments=_get_nmap_args(target, "-sS -f -p 22,80,443,3389,8080 -T4"))
     frag_open: dict[str, set] = {}
     for host in nm3.all_hosts():
         if nm3[host].state() != "up":
@@ -462,7 +468,7 @@ def detect_firewall_ids_evasion(target: str = DEFAULT_TARGET) -> dict:
 
     # -- Technique 4: Source-port spoofing --------------------------------
     nm4 = nmap.PortScanner()
-    nm4.scan(hosts=target, arguments=f"{NMAP_PRIVILEGED}-sS --source-port 53 -p 22,80,443,3389,8080 -T4")
+    nm4.scan(hosts=target, arguments=_get_nmap_args(target, "-sS --source-port 53 -p 22,80,443,3389,8080 -T4"))
     srcport_open: dict[str, set] = {}
     for host in nm4.all_hosts():
         if nm4[host].state() != "up":

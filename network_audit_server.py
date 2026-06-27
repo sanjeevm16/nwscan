@@ -8,6 +8,13 @@ from tools.NWAuditTool import (
     detect_os_fingerprinting,
     detect_firewall_ids_evasion,
 )
+from tools.AWSAuditTool import (
+    collect_all_aws_metrics,
+    audit_aws_drift,
+    update_aws_baseline,
+    detect_aws_vulnerabilities,
+)
+from tools.pqc_observability.orchestrator import run_pqc_telemetry
 from mcp.server.fastmcp import FastMCP
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +29,17 @@ import uvicorn
 
 class ScanRequest(BaseModel):
     target: str = "172.17.0.1/24"
+
+class AWSRequest(BaseModel):
+    region: str = "us-west-2"
+    role_arn: str = None
+    external_id: str = None
+    resource_arn: str = None
+
+class PQCRequest(BaseModel):
+    env: str = "on-prem"
+    resource_arn: str = None
+
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +92,44 @@ def mcp_detect_firewall_ids_evasion(target: str = "172.17.0.1/24") -> str:
     """Probes target using multiple nmap evasion techniques and reports which
     hosts are vulnerable to firewall/IDS bypasses."""
     result = detect_firewall_ids_evasion(target)
+    return json.dumps(result, indent=2)
+
+
+@mcp.tool()
+def mcp_collect_aws_metrics() -> str:
+    """Collects network metrics from EC2, ENI, and ELB resources via CloudWatch."""
+    result = collect_all_aws_metrics()
+    return json.dumps(result, indent=2)
+
+
+@mcp.tool()
+def mcp_audit_aws_drift(region: str = "us-west-2", role_arn: str = None, external_id: str = None) -> str:
+    """Detects configuration drift in AWS security groups by comparing current
+    state against a saved baseline."""
+    result = audit_aws_drift(region, role_arn, external_id)
+    return json.dumps(result, indent=2)
+
+
+@mcp.tool()
+def mcp_update_aws_baseline(region: str = "us-west-2", role_arn: str = None, external_id: str = None) -> str:
+    """Saves the current AWS security group configuration as the new approved baseline."""
+    result = update_aws_baseline(region, role_arn, external_id)
+    return json.dumps(result, indent=2)
+
+
+@mcp.tool()
+def mcp_detect_aws_vulnerabilities(region: str = "us-west-2", role_arn: str = None, external_id: str = None) -> str:
+    """Scans AWS resources for common vulnerabilities like open security group
+    ports and unencrypted EBS volumes."""
+    result = detect_aws_vulnerabilities(region, role_arn, external_id)
+    return json.dumps(result, indent=2)
+
+
+@mcp.tool()
+def mcp_run_pqc_telemetry(env: str = "on-prem", resource_arn: str = None) -> str:
+    """Collects PQC performance metrics from the specified environment."""
+    result = run_pqc_telemetry(env)
+    # Note: resource_arn could be used here in the future
     return json.dumps(result, indent=2)
 
 
@@ -175,6 +231,57 @@ def api_vuln_firewall(req: ScanRequest):
     """Tests firewall/IDS evasion techniques and reports bypass vulnerabilities."""
     try:
         result = detect_firewall_ids_evasion(req.target)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.get("/aws/metrics")
+def api_aws_metrics():
+    """Collects AWS network metrics."""
+    try:
+        result = collect_all_aws_metrics()
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/aws/audit")
+def api_aws_audit(req: AWSRequest):
+    """Audits AWS security group configuration for drift."""
+    try:
+        result = audit_aws_drift(req.region, req.role_arn, req.external_id)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/aws/update-baseline")
+def api_aws_update_baseline(req: AWSRequest):
+    """Updates the AWS security group baseline."""
+    try:
+        result = update_aws_baseline(req.region, req.role_arn, req.external_id)
+        return {"status": "success", "message": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/aws/vuln")
+def api_aws_vuln(req: AWSRequest):
+    """Identifies common AWS vulnerabilities."""
+    try:
+        result = detect_aws_vulnerabilities(req.region, req.role_arn, req.external_id)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/pqc/collect")
+def api_pqc_collect(req: PQCRequest):
+    """Collects PQC performance metrics from a specified environment."""
+    try:
+        # In a real scenario, we might use req.resource_arn
+        result = run_pqc_telemetry(req.env)
         return {"status": "success", "data": result}
     except Exception as e:
         return {"status": "error", "message": str(e)}

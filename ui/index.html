@@ -48,6 +48,14 @@
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
     .time-display{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-muted)}
 
+    /* Tabs */
+    .tabs-nav{display:flex;gap:4px;margin-bottom:32px;background:rgba(255,255,255,0.03);padding:4px;border-radius:12px;border:1px solid var(--border);width:fit-content;}
+    .tab-btn{background:transparent;color:var(--text-muted);border:none;transition:all .2s;padding:10px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px}
+    .tab-btn.active{background:rgba(255,255,255,0.08);color:var(--cyan);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+    .tab-content{display:none}
+    .tab-content.active{display:block;animation:fadeIn .4s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
     /* IP Range Bar */
     .target-bar{display:flex;align-items:center;gap:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 22px;margin-bottom:36px;flex-wrap:wrap}
     .target-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
@@ -68,15 +76,15 @@
     .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--cyan));opacity:0.7}
     .stat-card:hover{border-color:rgba(255,255,255,0.15);background:var(--bg-card-hover)}
     .stat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-    .stat-value{font-size:28px;font-weight:700;line-height:1;color:var(--accent,var(--cyan))}
-    .stat-sub{font-size:11px;color:var(--text-muted);margin-top:5px}
+    .stat-value{font-size:24px;font-weight:700;line-height:1;color:var(--accent,var(--cyan))}
+    .stat-sub{font-size:10px;color:var(--text-muted);margin-top:5px}
 
     /* Section title */
     .section-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:18px;display:flex;align-items:center;gap:10px}
     .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
     .section-badge{font-size:10px;padding:2px 8px;border-radius:4px;background:var(--cyan-dim);color:var(--cyan);font-family:'JetBrains Mono',monospace}
 
-    /* Tools grid – 3 cols for core, full-width for vuln */
+    /* Tools grid */
     .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:36px}
     .vuln-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:36px}
     .tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;gap:14px;transition:border-color .3s,transform .2s,box-shadow .3s}
@@ -86,18 +94,20 @@
     .tool-desc{font-size:12px;color:var(--text-muted);line-height:1.6;flex:1}
     .tool-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
     .tool-endpoint{padding:3px 8px;border-radius:5px;background:rgba(255,255,255,0.05);border:1px solid var(--border)}
+    
     .progress-bar-wrap{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;display:none}
     .progress-bar-wrap.active{display:block}
     .progress-bar{height:100%;width:35%;border-radius:2px;background:var(--card-color,var(--cyan))}
     .progress-bar.indeterminate{animation:indeterminate 1.4s ease-in-out infinite}
     @keyframes indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+    
     .tool-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
     .tool-status-dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint)}
     .tool-status-dot.running{background:var(--amber);animation:pulse 1s infinite}
     .tool-status-dot.success{background:var(--green)}
     .tool-status-dot.error{background:var(--red)}
 
-    /* Vuln severity pill */
+    /* Severity pill */
     .sev-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
     .sev-critical{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
     .sev-high{background:rgba(249,115,22,.2);color:#fdba74;border:1px solid rgba(249,115,22,.3)}
@@ -113,8 +123,7 @@
     .btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none}
     .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
     .btn-ghost:hover{background:var(--bg-card-hover);color:var(--text);border-color:rgba(255,255,255,.2)}
-    .btn-danger{background:linear-gradient(135deg,var(--red),var(--orange));color:#fff}
-    .btn-danger:hover{opacity:.9}
+    
     .spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
     .spinner.active{display:block}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -127,22 +136,27 @@
     .results-body{padding:22px;min-height:120px}
     .results-empty{text-align:center;color:var(--text-muted);font-size:14px;padding:40px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
     .empty-icon{font-size:38px;opacity:.35}
+    
+    /* Tables */
     .device-table{width:100%;border-collapse:collapse;font-size:12px}
     .device-table th{text-align:left;padding:9px 12px;color:var(--text-muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
     .device-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'JetBrains Mono',monospace;font-size:11px}
-    .device-table tr:last-child td{border-bottom:none}
     .device-table tr:hover td{background:rgba(255,255,255,.025)}
+    
     .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;margin:1px}
     .tag-port{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
     .tag-added{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,.2)}
     .tag-removed{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.2)}
     .tag-new{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
     .tag-missing{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+    
     .drift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
     .drift-block{padding:14px 18px;border-radius:var(--radius-sm);border:1px solid var(--border)}
     .drift-count{font-size:26px;font-weight:700}
     .drift-label{font-size:11px;color:var(--text-muted);margin-top:3px}
+    
     .raw-output{background:rgba(0,0,0,.35);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:var(--text-muted);white-space:pre-wrap;word-break:break-all;max-height:280px;overflow-y:auto}
+    
     .alert{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:var(--radius-sm);border-left:3px solid;margin-bottom:16px;font-size:13px}
     .alert-icon{font-size:17px;flex-shrink:0;margin-top:-1px}
     .alert-success{background:var(--green-dim);border-color:var(--green);color:#a7f3d0}
@@ -155,14 +169,12 @@
     .vuln-host-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;transition:background .2s}
     .vuln-host-header:hover{background:rgba(255,255,255,.05)}
     .vuln-host-ip{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text)}
-    .vuln-host-name{font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
     .vuln-host-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
     .vuln-finding{padding:12px 14px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,.2)}
     .vuln-finding-title{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
     .vuln-finding-desc{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:8px}
     .vuln-ports{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
     .remediation-plan{margin-top:16px;padding:14px 16px;border-radius:var(--radius-sm);background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.12)}
-    .remediation-title{font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:6px}
     .remediation-list{list-style:none;display:flex;flex-direction:column;gap:6px}
     .remediation-list li{font-size:12px;color:var(--text-muted);padding-left:18px;position:relative;line-height:1.5}
     .remediation-list li::before{content:'→';position:absolute;left:0;color:var(--cyan);font-size:11px}
@@ -170,12 +182,6 @@
     .collapsible-body.open{display:block}
     .chevron{margin-left:auto;color:var(--text-faint);transition:transform .2s;font-size:12px}
     .chevron.open{transform:rotate(90deg)}
-
-    /* Summary cards for vuln */
-    .vuln-summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-    .vuln-summary-card{padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center}
-    .vscard-val{font-size:22px;font-weight:700;line-height:1}
-    .vscard-lbl{font-size:11px;color:var(--text-muted);margin-top:4px}
 
     /* Log panel */
     .log-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
@@ -190,7 +196,6 @@
     .log-label-ok{background:var(--green-dim);color:var(--green)}
     .log-label-warn{background:var(--amber-dim);color:var(--amber)}
     .log-label-error{background:var(--red-dim);color:var(--red)}
-    .log-msg{color:var(--text-muted);flex:1}
 
     /* Toast */
     #toast-container{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px}
@@ -200,9 +205,8 @@
     @keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
 
     /* Responsive */
-    @media(max-width:1100px){.vuln-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:800px){.tools-grid{grid-template-columns:1fr}.vuln-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.drift-grid{grid-template-columns:1fr}}
-    @media(max-width:560px){.stats-row{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start;gap:14px}}
+    @media(max-width:1100px){.tools-grid, .vuln-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:800px){.tools-grid, .vuln-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.drift-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -217,7 +221,7 @@
         <div class="brand-icon">🛡️</div>
         <div>
           <div class="brand-name">Net<span>Sentinel</span></div>
-          <div class="brand-sub">Network-Audit · Vuln-Scanner · Drift-Detector · MCP v2.0</div>
+          <div class="brand-sub">Network-Audit · Cloud-Security · Post-Quantum · MCP v2.0</div>
         </div>
       </div>
       <div class="header-right">
@@ -230,560 +234,634 @@
       </div>
     </header>
 
-    <!-- ── IP Range Input ── -->
-    <div class="target-bar" role="group" aria-label="Scan target configuration">
-      <span class="target-label">🎯 Target</span>
-      <div class="target-input-wrap">
-        <span class="target-input-icon">🌐</span>
-        <input
-          type="text"
-          id="target-input"
-          class="target-input"
-          value="172.17.0.1/24"
-          placeholder="e.g. 192.168.1.0/24 or 10.0.0.1-50 or 192.168.1.5"
-          spellcheck="false"
-          autocomplete="off"
-          oninput="validateTarget()"
-          aria-label="Target IP range or subnet"
-        />
-      </div>
-      <div class="target-presets" aria-label="Quick target presets">
-        <button class="preset-btn" onclick="setTarget('192.168.1.0/24')">192.168.1.0/24</button>
-        <button class="preset-btn" onclick="setTarget('10.0.0.0/24')">10.0.0.0/24</button>
-        <button class="preset-btn" onclick="setTarget('172.17.0.0/16')">172.17.0.0/16</button>
-        <button class="preset-btn" onclick="setTarget('192.168.1.1-50')">192.168.1.1-50</button>
-      </div>
-      <div class="target-validate validate-ok" id="target-validate">✓ Valid</div>
+    <!-- ── Navigation Tabs ── -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="network" onclick="showTab('network')">🌐 Network</button>
+      <button class="tab-btn" data-tab="aws" onclick="showTab('aws')">☁️ AWS Cloud</button>
+      <button class="tab-btn" data-tab="pqc" onclick="showTab('pqc')">🧪 PQC Telemetry</button>
     </div>
 
-    <!-- ── Stats Row ── -->
-    <div class="stats-row">
-      <div class="stat-card" style="--accent:var(--cyan)">
-        <div class="stat-label">Live Devices</div>
-        <div class="stat-value" id="stat-devices">—</div>
-        <div class="stat-sub">last scan result</div>
+    <!-- ── Network Tab ── -->
+    <div id="tab-network" class="tab-content active">
+      <div class="stats-row">
+        <div class="stat-card" style="--accent:var(--cyan)">
+          <div class="stat-label">Live Devices</div>
+          <div class="stat-value" id="stat-nw-devices">—</div>
+          <div class="stat-sub">last scan result</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--green)">
+          <div class="stat-label">Baseline Size</div>
+          <div class="stat-value" id="stat-nw-baseline">—</div>
+          <div class="stat-sub">approved devices</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--amber)">
+          <div class="stat-label">Drift Events</div>
+          <div class="stat-value" id="stat-nw-drift">—</div>
+          <div class="stat-sub">last audit run</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--red)">
+          <div class="stat-label">Vuln Hosts</div>
+          <div class="stat-value" id="stat-nw-vuln">—</div>
+          <div class="stat-sub">last vuln scan</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--purple)">
+          <div class="stat-label">Tool Runs</div>
+          <div class="stat-value" id="stat-nw-runs">0</div>
+          <div class="stat-sub">this session</div>
+        </div>
       </div>
-      <div class="stat-card" style="--accent:var(--green)">
-        <div class="stat-label">Baseline Size</div>
-        <div class="stat-value" id="stat-baseline">—</div>
-        <div class="stat-sub">approved devices</div>
-      </div>
-      <div class="stat-card" style="--accent:var(--amber)">
-        <div class="stat-label">Drift Events</div>
-        <div class="stat-value" id="stat-drift">—</div>
-        <div class="stat-sub">last audit run</div>
-      </div>
-      <div class="stat-card" style="--accent:var(--red)">
-        <div class="stat-label">Vuln Hosts</div>
-        <div class="stat-value" id="stat-vuln">—</div>
-        <div class="stat-sub">last vuln scan</div>
-      </div>
-      <div class="stat-card" style="--accent:var(--purple)">
-        <div class="stat-label">Tool Runs</div>
-        <div class="stat-value" id="stat-runs">0</div>
-        <div class="stat-sub">this session</div>
-      </div>
-    </div>
 
-    <!-- ── Core MCP Tools ── -->
-    <div class="section-title">MCP Tools <span class="section-badge">CORE</span></div>
-    <div class="tools-grid">
-      <!-- Scan -->
-      <div class="tool-card" style="--card-color:var(--cyan);--icon-bg:var(--cyan-dim);--icon-border:rgba(0,212,255,.25)">
-        <div class="tool-icon">📡</div>
-        <div>
+      <div class="target-bar">
+        <span class="target-label">🎯 Target</span>
+        <div class="target-input-wrap">
+          <span class="target-input-icon">🌐</span>
+          <input type="text" id="target-input" class="target-input" value="172.17.0.1/24" oninput="validateTarget()">
+        </div>
+        <div class="target-presets">
+          <button class="preset-btn" onclick="setTarget('192.168.1.0/24')">192.168.1.0/24</button>
+          <button class="preset-btn" onclick="setTarget('10.0.0.0/24')">10.0.0.0/24</button>
+          <button class="preset-btn" onclick="setTarget('fd00::/64')">fd00::/64 (IPv6)</button>
+        </div>
+        <div class="target-validate validate-ok" id="target-validate">✓ Valid</div>
+      </div>
+
+      <div class="section-title">MCP Tools <span class="section-badge">CORE</span></div>
+      <div class="tools-grid">
+        <div class="tool-card" style="--card-color:var(--cyan)">
+          <div class="tool-icon">📡</div>
           <div class="tool-name">Scan Network</div>
-          <div class="tool-desc">Fast nmap sweep of the target range. Discovers all active hosts, MACs, vendors, and open TCP ports.</div>
+          <div class="tool-desc">Fast nmap sweep of the target range. Discovers hosts, MACs, vendors, and ports.</div>
+          <div class="progress-bar-wrap" id="scan-progress-wrap"><div class="progress-bar indeterminate"></div></div>
+          <div class="tool-meta"><span id="scan-status-text">idle</span><span class="tool-endpoint">POST /scan</span></div>
+          <button class="btn btn-primary" onclick="runScan()" id="btn-scan">▶ Run Scan</button>
         </div>
-        <div class="progress-bar-wrap" id="scan-progress-wrap"><div class="progress-bar indeterminate"></div></div>
-        <div class="tool-meta">
-          <div class="tool-status"><div class="tool-status-dot" id="scan-status-dot"></div><span id="scan-status-text">idle</span></div>
-          <span class="tool-endpoint">POST /scan</span>
-        </div>
-        <button class="btn btn-primary" id="btn-scan" onclick="runScan()">
-          <div class="spinner" id="scan-spinner"></div>
-          <span id="btn-scan-label">▶ Run Scan</span>
-        </button>
-      </div>
-
-      <!-- Audit -->
-      <div class="tool-card" style="--card-color:var(--purple);--icon-bg:var(--purple-dim);--icon-border:rgba(139,92,246,.25)">
-        <div class="tool-icon">🔍</div>
-        <div>
+        <div class="tool-card" style="--card-color:var(--purple)">
+          <div class="tool-icon">🔍</div>
           <div class="tool-name">Audit Network</div>
-          <div class="tool-desc">Compares live network state against the saved baseline. Reports new devices, missing hosts, and port changes.</div>
+          <div class="tool-desc">Compares live state against baseline. Reports new, missing, or changed devices.</div>
+          <div class="progress-bar-wrap" id="audit-progress-wrap"><div class="progress-bar indeterminate"></div></div>
+          <div class="tool-meta"><span id="audit-status-text">idle</span><span class="tool-endpoint">POST /audit</span></div>
+          <button class="btn btn-primary" onclick="runAudit()" id="btn-audit">▶ Run Audit</button>
         </div>
-        <div class="progress-bar-wrap" id="audit-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--purple),var(--cyan))"></div></div>
-        <div class="tool-meta">
-          <div class="tool-status"><div class="tool-status-dot" id="audit-status-dot"></div><span id="audit-status-text">idle</span></div>
-          <span class="tool-endpoint">POST /audit</span>
-        </div>
-        <button class="btn btn-primary" id="btn-audit" onclick="runAudit()" style="background:linear-gradient(135deg,var(--purple),var(--cyan))">
-          <div class="spinner" id="audit-spinner"></div>
-          <span id="btn-audit-label">▶ Run Audit</span>
-        </button>
-      </div>
-
-      <!-- Baseline -->
-      <div class="tool-card" style="--card-color:var(--green);--icon-bg:var(--green-dim);--icon-border:rgba(16,185,129,.25)">
-        <div class="tool-icon">💾</div>
-        <div>
+        <div class="tool-card" style="--card-color:var(--green)">
+          <div class="tool-icon">💾</div>
           <div class="tool-name">Update Baseline</div>
-          <div class="tool-desc">Scans the network and saves the current live state as the new approved baseline configuration file.</div>
+          <div class="tool-desc">Saves current live state as the new approved baseline configuration.</div>
+          <div class="progress-bar-wrap" id="baseline-progress-wrap"><div class="progress-bar indeterminate"></div></div>
+          <div class="tool-meta"><span id="baseline-status-text">idle</span><span class="tool-endpoint">POST /update-baseline</span></div>
+          <button class="btn btn-primary" onclick="runUpdateBaseline()" id="btn-baseline">▶ Update Baseline</button>
         </div>
-        <div class="progress-bar-wrap" id="baseline-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
-        <div class="tool-meta">
-          <div class="tool-status"><div class="tool-status-dot" id="baseline-status-dot"></div><span id="baseline-status-text">idle</span></div>
-          <span class="tool-endpoint">POST /update-baseline</span>
-        </div>
-        <button class="btn btn-primary" id="btn-baseline" onclick="runUpdateBaseline()" style="background:linear-gradient(135deg,var(--green),var(--cyan))">
-          <div class="spinner" id="baseline-spinner"></div>
-          <span id="btn-baseline-label">▶ Update Baseline</span>
-        </button>
       </div>
-    </div>
 
-    <!-- ── Vulnerability Scanners ── -->
-    <div class="section-title">Vulnerability Scanners <span class="section-badge">NEW</span></div>
-    <div class="vuln-grid">
-      <!-- UDP Anomaly -->
-      <div class="tool-card" style="--card-color:var(--red);--icon-bg:var(--red-dim);--icon-border:rgba(239,68,68,.25)">
-        <div class="tool-icon">📶</div>
-        <div>
+      <div class="section-title">Vulnerability Scanners</div>
+      <div class="vuln-grid">
+        <div class="tool-card" style="--card-color:var(--red)">
+          <div class="tool-icon">📶</div>
           <div class="tool-name">UDP Port Anomaly</div>
-          <div class="tool-desc">Scans for dangerous open UDP services: TFTP, SNMP, UPnP, Memcached, IPMI and more. Classifies CRITICAL / HIGH / MEDIUM risk with fix plans.</div>
+          <div class="tool-desc">Scans for dangerous UDP services (TFTP, SNMP, etc.) with risk classification.</div>
+          <button class="btn btn-primary" onclick="runVulnUDP()" id="btn-udp">▶ Scan UDP</button>
         </div>
-        <div class="progress-bar-wrap" id="udp-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--red),var(--orange))"></div></div>
-        <div class="tool-meta">
-          <div class="tool-status"><div class="tool-status-dot" id="udp-status-dot"></div><span id="udp-status-text">idle</span></div>
-          <span class="tool-endpoint">POST /vuln/udp</span>
-        </div>
-        <button class="btn btn-primary" id="btn-udp" onclick="runVulnUDP()" style="background:linear-gradient(135deg,var(--red),var(--orange))">
-          <div class="spinner" id="udp-spinner"></div>
-          <span id="btn-udp-label">▶ Scan UDP</span>
-        </button>
-      </div>
-
-      <!-- OS Fingerprint -->
-      <div class="tool-card" style="--card-color:var(--orange);--icon-bg:var(--orange-dim);--icon-border:rgba(249,115,22,.25)">
-        <div class="tool-icon">🖥️</div>
-        <div>
+        <div class="tool-card" style="--card-color:var(--orange)">
+          <div class="tool-icon">🖥️</div>
           <div class="tool-name">OS Fingerprinting</div>
-          <div class="tool-desc">Uses nmap OS detection to identify host operating systems and flags EOL systems (Windows XP/7, CentOS 6, Ubuntu 16, etc.) with upgrade roadmap.</div>
+          <div class="tool-desc">Identifies host OS and flags EOL systems (XP/7, CentOS 6, etc.).</div>
+          <button class="btn btn-primary" onclick="runVulnOS()" id="btn-os">▶ Fingerprint OS</button>
         </div>
-        <div class="progress-bar-wrap" id="os-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--orange),var(--amber))"></div></div>
-        <div class="tool-meta">
-          <div class="tool-status"><div class="tool-status-dot" id="os-status-dot"></div><span id="os-status-text">idle</span></div>
-          <span class="tool-endpoint">POST /vuln/os</span>
+        <div class="tool-card" style="--card-color:var(--pink)">
+          <div class="tool-icon">🔥</div>
+          <div class="tool-name">Firewall Evasion</div>
+          <div class="tool-desc">Tests packet fragmentation and spoofing to detect bypass vulnerabilities.</div>
+          <button class="btn btn-primary" onclick="runVulnFirewall()" id="btn-fw">▶ Test Evasion</button>
         </div>
-        <button class="btn btn-primary" id="btn-os" onclick="runVulnOS()" style="background:linear-gradient(135deg,var(--orange),var(--amber))">
-          <div class="spinner" id="os-spinner"></div>
-          <span id="btn-os-label">▶ Fingerprint OS</span>
-        </button>
+      </div>
+      
+      <div class="section-title">Network Results</div>
+      <div class="results-panel" id="nw-results-panel">
+        <div class="results-header">
+          <div class="results-title"><span id="nw-results-tool-name">Output</span> <span class="badge" id="nw-results-badge">—</span></div>
+          <button class="btn btn-ghost" onclick="clearResults('nw')" style="font-size:11px">✕ Clear</button>
+        </div>
+        <div class="results-body" id="nw-results-body">
+          <div class="results-empty"><div class="empty-icon">🌐</div><span>Run a tool above to see results</span></div>
+        </div>
+      </div>
+    </div><!-- #tab-network -->
+
+    <!-- ── AWS Tab ── -->
+    <div id="tab-aws" class="tab-content">
+      <div class="stats-row">
+        <div class="stat-card" style="--accent:var(--cyan)">
+          <div class="stat-label">EC2 Instances</div>
+          <div class="stat-value" id="stat-aws-ec2">—</div>
+          <div class="stat-sub">detected resources</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--purple)">
+          <div class="stat-label">Load Balancers</div>
+          <div class="stat-value" id="stat-aws-elb">—</div>
+          <div class="stat-sub">detected resources</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--amber)">
+          <div class="stat-label">Drift Events</div>
+          <div class="stat-value" id="stat-aws-drift">—</div>
+          <div class="stat-sub">secgroup changes</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--red)">
+          <div class="stat-label">Vulnerabilities</div>
+          <div class="stat-value" id="stat-aws-vuln">—</div>
+          <div class="stat-sub">critical issues</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--purple)">
+          <div class="stat-label">Tool Runs</div>
+          <div class="stat-value" id="stat-aws-runs">0</div>
+          <div class="stat-sub">this session</div>
+        </div>
       </div>
 
-      <!-- Firewall / IDS Evasion -->
-      <div class="tool-card" style="--card-color:var(--pink);--icon-bg:var(--pink-dim);--icon-border:rgba(236,72,153,.25)">
-        <div class="tool-icon">🔥</div>
-        <div>
-          <div class="tool-name">Firewall &amp; IDS Evasion</div>
-          <div class="tool-desc">Tests FIN/NULL/Xmas scans, fragmented packets, and source-port spoofing to detect firewall bypasses and IDS blind spots. Produces hardening roadmap.</div>
+      <div class="target-bar">
+        <span class="target-label">🌍 AWS Region</span>
+        <div class="target-input-wrap">
+          <input type="text" id="aws-region" class="target-input" value="us-west-2" style="padding-left:14px;">
         </div>
-        <div class="progress-bar-wrap" id="fw-progress-wrap"><div class="progress-bar indeterminate" style="background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div>
-        <div class="tool-meta">
-          <div class="tool-status"><div class="tool-status-dot" id="fw-status-dot"></div><span id="fw-status-text">idle</span></div>
-          <span class="tool-endpoint">POST /vuln/firewall</span>
+        <div class="target-presets">
+          <button class="preset-btn" onclick="document.getElementById('aws-region').value='us-east-1'">us-east-1</button>
+          <button class="preset-btn" onclick="document.getElementById('aws-region').value='us-west-2'">us-west-2</button>
         </div>
-        <button class="btn btn-primary" id="btn-fw" onclick="runVulnFirewall()" style="background:linear-gradient(135deg,var(--pink),var(--purple))">
-          <div class="spinner" id="fw-spinner"></div>
-          <span id="btn-fw-label">▶ Test Evasion</span>
-        </button>
       </div>
-    </div>
 
-    <!-- ── Results ── -->
-    <div class="section-title">Results</div>
-    <div class="results-panel">
-      <div class="results-header">
-        <div class="results-title">
-          <span id="results-tool-name">Output</span>
-          <span class="badge" id="results-badge">—</span>
+      <!-- ── AWS Cloud Config ── -->
+      <div class="target-bar" style="background:rgba(255,255,255,0.02); margin-top:-24px; border-top:none; border-top-left-radius:0; border-top-right-radius:0;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; width:100%;">
+          <div>
+            <div class="target-label" style="margin-bottom:8px">Role ARN</div>
+            <input type="text" id="aws-role-arn" class="target-input" placeholder="arn:aws:iam::..." style="padding-left:14px; font-size:12px;">
+          </div>
+          <div>
+            <div class="target-label" style="margin-bottom:8px">External ID</div>
+            <input type="text" id="aws-external-id" class="target-input" placeholder="Optional" style="padding-left:14px; font-size:12px;">
+          </div>
+          <div>
+            <div class="target-label" style="margin-bottom:8px">Resource ARN</div>
+            <input type="text" id="aws-resource-arn" class="target-input" placeholder="arn:aws:ec2:..." style="padding-left:14px; font-size:12px;">
+          </div>
         </div>
-        <button class="btn btn-ghost" onclick="clearResults()" style="font-size:12px;padding:6px 11px;">✕ Clear</button>
       </div>
-      <div class="results-body" id="results-body">
-        <div class="results-empty">
-          <div class="empty-icon">🌐</div>
-          <span>Run a tool above to see results here</span>
+
+      <div class="section-title">AWS Security Tools</div>
+      <div class="tools-grid">
+        <div class="tool-card" style="--card-color:var(--cyan)">
+          <div class="tool-icon">📊</div>
+          <div class="tool-name">Collect Metrics</div>
+          <div class="tool-desc">Aggregates network metrics from EC2, ENI, and ELB via CloudWatch.</div>
+          <button class="btn btn-primary" onclick="runAWSMetrics()" id="btn-aws-metrics">▶ Run</button>
+        </div>
+        <div class="tool-card" style="--card-color:var(--purple)">
+          <div class="tool-icon">🛡️</div>
+          <div class="tool-name">Audit Drift</div>
+          <div class="tool-desc">Detects changes in Security Groups against the approved baseline.</div>
+          <button class="btn btn-primary" onclick="runAWSAudit()" id="btn-aws-audit">▶ Run</button>
+        </div>
+        <div class="tool-card" style="--card-color:var(--green)">
+          <div class="tool-icon">🔒</div>
+          <div class="tool-name">Update Baseline</div>
+          <div class="tool-desc">Saves current Security Group state as the new approved baseline.</div>
+          <button class="btn btn-primary" onclick="runAWSUpdateBaseline()" id="btn-aws-baseline">▶ Run</button>
         </div>
       </div>
-    </div>
+      
+      <div class="section-title">AWS Vulnerabilities</div>
+      <div class="tool-card" style="--card-color:var(--red); max-width: 400px; margin-bottom: 36px;">
+        <div class="tool-icon">💀</div>
+        <div class="tool-name">Vulnerability Scan</div>
+        <div class="tool-desc">Checks for open high-risk ports, unencrypted volumes, and risky IAM.</div>
+        <button class="btn btn-primary" onclick="runAWSVuln()" id="btn-aws-vuln">▶ Scan AWS</button>
+      </div>
+
+      <div class="section-title">AWS Results</div>
+      <div class="results-panel" id="aws-results-panel">
+        <div class="results-header">
+          <div class="results-title"><span id="aws-results-tool-name">Output</span> <span class="badge" id="aws-results-badge">—</span></div>
+          <button class="btn btn-ghost" onclick="clearResults('aws')" style="font-size:11px">✕ Clear</button>
+        </div>
+        <div class="results-body" id="aws-results-body">
+          <div class="results-empty"><div class="empty-icon">☁️</div><span>Run an AWS tool above to see results</span></div>
+        </div>
+      </div>
+    </div><!-- #tab-aws -->
+
+    <!-- ── PQC Tab ── -->
+    <div id="tab-pqc" class="tab-content">
+      <div class="stats-row">
+        <div class="stat-card" style="--accent:var(--cyan)">
+          <div class="stat-label">ML-KEM Latency</div>
+          <div class="stat-value" id="stat-pqc-kem">—</div>
+          <div class="stat-sub">avg round time</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--green)">
+          <div class="stat-label">PQC Ready</div>
+          <div class="stat-value" id="stat-pqc-ready">—</div>
+          <div class="stat-sub">readiness status</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--amber)">
+          <div class="stat-label">Environment</div>
+          <div class="stat-value" id="stat-pqc-env" style="font-size:16px">—</div>
+          <div class="stat-sub">active context</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--purple)">
+          <div class="stat-label">Handshake</div>
+          <div class="stat-value" id="stat-pqc-tls">—</div>
+          <div class="stat-sub">TLS 1.3 + KEM</div>
+        </div>
+        <div class="stat-card" style="--accent:var(--purple)">
+          <div class="stat-label">Tool Runs</div>
+          <div class="stat-value" id="stat-pqc-runs">0</div>
+          <div class="stat-sub">this session</div>
+        </div>
+      </div>
+
+      <div class="target-bar">
+        <span class="target-label">🏗️ Environment</span>
+        <select id="pqc-env-select" class="target-input" style="padding-left:14px;appearance:auto;background:rgba(0,0,0,0.5)">
+          <option value="on-prem">On-Prem Datacenter</option>
+          <option value="aws-vpc">AWS VPC (Production)</option>
+        </select>
+        <div style="flex:1; margin-left:16px;">
+          <div class="target-label" style="margin-bottom:8px">Resource ARN</div>
+          <input type="text" id="pqc-resource-arn" class="target-input" placeholder="arn:aws:lambda:..." style="padding-left:14px; font-size:12px;">
+        </div>
+      </div>
+
+      <div class="section-title">Post-Quantum Cryptography Metrics</div>
+      <div class="tool-card" style="--card-color:var(--cyan); max-width: 500px; margin: 0 auto 36px;">
+        <div class="tool-icon">🧪</div>
+        <div class="tool-name">Run PQC Telemetry</div>
+        <div class="tool-desc">Benchmarks ML-KEM (Kyber) and assessments of environment PQC posture.</div>
+        <button class="btn btn-primary" onclick="runPQCTelemetry()" id="btn-pqc">▶ Collect Telemetry</button>
+      </div>
+
+      <div class="section-title">PQC Results</div>
+      <div class="results-panel" id="pqc-results-panel">
+        <div class="results-header">
+          <div class="results-title"><span id="pqc-results-tool-name">Output</span> <span class="badge" id="pqc-results-badge">—</span></div>
+          <button class="btn btn-ghost" onclick="clearResults('pqc')" style="font-size:11px">✕ Clear</button>
+        </div>
+        <div class="results-body" id="pqc-results-body">
+          <div class="results-empty"><div class="empty-icon">🧪</div><span>Run PQC telemetry to see results</span></div>
+        </div>
+      </div>
+    </div><!-- #tab-pqc -->
 
     <!-- ── Activity Log ── -->
-    <div class="log-panel">
+    <div class="log-panel" style="margin-top:20px">
       <div class="log-header">
         <div class="log-title">📋 Activity Log</div>
-        <button class="btn btn-ghost" onclick="clearLog()" style="font-size:12px;padding:6px 11px;">Clear</button>
+        <button class="btn btn-ghost" onclick="clearLog()" style="font-size:11px">Clear</button>
       </div>
-      <div class="log-body" id="log-body">
-        <div class="log-entry" style="opacity:1;transform:none">
-          <span class="log-ts">--:--:--</span>
-          <span class="log-label log-label-info">INFO</span>
-          <span class="log-msg">NetSentinel v2.0 loaded. Waiting for server…</span>
-        </div>
-      </div>
+      <div class="log-body" id="log-body"></div>
     </div>
 
   </div><!-- .layout -->
 
   <script>
     const API = 'http://localhost:8000';
-    let totalRuns = 0;
+    let runs = { network: 0, aws: 0, pqc: 0 };
 
-    // ── Clock ────────────────────────────────────────────────────────────────
+    // ── UI Helpers ───────────────────────────────────────────────────────────
+    function showTab(tabId){
+      document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.toggle('active',btn.getAttribute('data-tab')===tabId));
+      document.querySelectorAll('.tab-content').forEach(content=>content.classList.toggle('active',content.id==='tab-'+tabId));
+      addLog('info', `Switched to ${tabId.toUpperCase()} tab`);
+    }
+
     function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false})}
-    setInterval(updateClock,1000);updateClock();
+    setInterval(updateClock,1000); updateClock();
 
-    // ── Target helpers ───────────────────────────────────────────────────────
-    function getTarget(){return document.getElementById('target-input').value.trim()||'172.17.0.1/24'}
-    function setTarget(val){document.getElementById('target-input').value=val;validateTarget()}
+    function setTarget(val){document.getElementById('target-input').value=val; validateTarget();}
     function validateTarget(){
       const v=document.getElementById('target-input').value.trim();
       const el=document.getElementById('target-validate');
-      const cidr=/^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/;
-      const range=/^(\d{1,3}\.){3}\d{1,3}-\d{1,3}$/;
-      const single=/^(\d{1,3}\.){3}\d{1,3}$/;
-      const hostname=/^[a-zA-Z0-9._-]+$/;
-      if(cidr.test(v)||range.test(v)||single.test(v)||hostname.test(v)){
-        el.className='target-validate validate-ok';el.textContent='✓ Valid';
-      }else{
-        el.className='target-validate validate-warn';el.textContent='⚠ Check format';
-      }
+      const isIpV4 = /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2}|-\d{1,3})?$/.test(v);
+      const isIpV6 = v.includes(':') && /^[0-9a-fA-F:/]+$/.test(v);
+      if(isIpV4 || isIpV6){el.className='target-validate validate-ok';el.textContent='✓ Valid';}
+      else{el.className='target-validate validate-warn';el.textContent='⚠ Check format';}
     }
 
-    // ── Health ───────────────────────────────────────────────────────────────
     async function checkHealth(){
       const dot=document.getElementById('server-dot'),label=document.getElementById('server-label');
       try{
         const r=await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});
-        if(r.ok){dot.className='dot online';label.textContent='Server Online';addLog('ok','Server health check passed');await fetchBaselineCount();}
+        if(r.ok){dot.className='dot online';label.textContent='Server Online'; await fetchBaselineNW();}
         else throw new Error();
-      }catch{dot.className='dot offline';label.textContent='Server Offline';addLog('error','Server unreachable — run: python network_audit_server.py');}
+      }catch{dot.className='dot offline';label.textContent='Server Offline';}
     }
 
-    async function fetchBaselineCount(){
-      try{const r=await fetch(API+'/baseline');const d=await r.json();document.getElementById('stat-baseline').textContent=d.count??'?';}catch{}
+    async function fetchBaselineNW(){
+      try{const r=await fetch(API+'/baseline');const d=await r.json();document.getElementById('stat-nw-baseline').textContent=d.count??'?';}catch{}
     }
 
-    // ── Core tool runners ────────────────────────────────────────────────────
+    // ── Network Runners ──────────────────────────────────────────────────────
     async function runScan(){
-      const target=getTarget();
-      setToolState('scan','running','Scanning…');addLog('info',`mcp_scan_network("${target}") invoked`);
+      const target=document.getElementById('target-input').value;
+      startTool('nw','scan','Scanning…');
       try{
-        const r=await fetch(API+'/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(60000)});
-        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        const r=await fetch(API+'/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})});
+        const d=await r.json();
         if(d.status==='success'){
           const count=d.count??Object.keys(d.data||{}).length;
-          document.getElementById('stat-devices').textContent=count;
-          setToolState('scan','success','Done — '+count+' device(s)');
-          addLog('ok','Scan complete: '+count+' device(s) found');
-          renderScanResults(d.data);showToast('Scan Complete',count+' device(s) discovered','green');
-        }else throw new Error(d.message||'Scan failed');
-      }catch(e){setToolState('scan','error','Error');addLog('error','Scan failed: '+e.message);showToast('Scan failed',e.message,'red');renderError(e.message);}
+          document.getElementById('stat-nw-devices').textContent=count;
+          finishTool('nw','scan','Scan Complete');
+          renderScanResults(d.data);
+          addLog('ok', `Network scan found ${count} devices`);
+        }else throw new Error(d.message);
+      }catch(e){finishTool('nw','scan','Scan Failed','error'); addLog('error', 'Scan failed: '+e.message);}
     }
 
     async function runAudit(){
-      const target=getTarget();
-      setToolState('audit','running','Auditing…');addLog('info',`mcp_audit_network("${target}") invoked`);
+      const target=document.getElementById('target-input').value;
+      startTool('nw','audit','Auditing…');
       try{
-        const r=await fetch(API+'/audit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(90000)});
-        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        const r=await fetch(API+'/audit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})});
+        const d=await r.json();
         if(d.status==='success'){
-          setToolState('audit','success','Done');addLog('ok','Audit complete');
+          finishTool('nw','audit','Audit Complete');
           if(d.data&&d.data.report){
             const rep=d.data.report;
             const n=Object.keys(rep.new_devices_detected||{}).length+Object.keys(rep.missing_devices||{}).length+Object.keys(rep.port_changes_detected||{}).length;
-            document.getElementById('stat-drift').textContent=n;
-            renderAuditResults(rep,d.raw);showToast('Drift Detected',n+' issue(s) found','amber');
-          }else{document.getElementById('stat-drift').textContent=0;renderAuditOk(d.raw);showToast('Audit Clean','No drift detected','green');}
-        }else throw new Error(d.message||'Audit failed');
-      }catch(e){setToolState('audit','error','Error');addLog('error','Audit failed: '+e.message);showToast('Audit failed',e.message,'red');renderError(e.message);}
+            document.getElementById('stat-nw-drift').textContent=n;
+            renderAuditResults(rep,d.raw);
+          }else{document.getElementById('stat-nw-drift').textContent=0; renderAuditOk(d.raw);}
+          addLog('ok', 'Network audit complete');
+        }else throw new Error(d.message);
+      }catch(e){finishTool('nw','audit','Audit Failed','error'); addLog('error', 'Audit failed: '+e.message);}
     }
 
     async function runUpdateBaseline(){
-      const target=getTarget();
-      setToolState('baseline','running','Updating…');addLog('info',`mcp_update_baseline("${target}") invoked`);
+      const target=document.getElementById('target-input').value;
+      startTool('nw','baseline','Updating…');
       try{
-        const r=await fetch(API+'/update-baseline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(90000)});
-        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        const r=await fetch(API+'/update-baseline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})});
+        const d=await r.json();
         if(d.status==='success'){
-          setToolState('baseline','success','Updated');addLog('ok','Baseline updated: '+d.message);
-          showToast('Baseline Saved',d.message,'green');await fetchBaselineCount();renderBaselineResult(d.message);
-        }else throw new Error(d.message||'Update failed');
-      }catch(e){setToolState('baseline','error','Error');addLog('error','Baseline update failed: '+e.message);showToast('Update failed',e.message,'red');renderError(e.message);}
+          finishTool('nw','baseline','Baseline Updated');
+          document.getElementById('stat-nw-baseline').textContent='Updating…';
+          await fetchBaselineNW();
+          renderBaselineResult(d.message);
+          addLog('ok', 'Network baseline updated');
+        }else throw new Error(d.message);
+      }catch(e){finishTool('nw','baseline','Update Failed','error');}
     }
 
-    // ── Vulnerability runners ────────────────────────────────────────────────
     async function runVulnUDP(){
-      const target=getTarget();
-      setToolState('udp','running','Scanning UDP…');addLog('info',`detect_udp_anomalies("${target}") invoked`);
+      const target=document.getElementById('target-input').value;
+      startTool('nw','udp','UDP Scan…');
       try{
-        const r=await fetch(API+'/vuln/udp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(180000)});
-        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        const r=await fetch(API+'/vuln/udp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})});
+        const d=await r.json();
         if(d.status==='success'){
           const vhosts=d.data.hosts_with_findings||0;
-          document.getElementById('stat-vuln').textContent=vhosts;
-          setToolState('udp','success',vhosts+' host(s) flagged');
-          addLog(vhosts?'warn':'ok',`UDP scan: ${vhosts} host(s) with dangerous ports`);
-          renderVulnResults('UDP Port Anomaly Detection','📶',d.data,'red');
-          showToast('UDP Scan Done',vhosts+' host(s) with dangerous UDP ports',vhosts?'red':'green');
+          document.getElementById('stat-nw-vuln').textContent=vhosts;
+          finishTool('nw','udp','UDP Scan Done');
+          renderVulnResults('UDP Port Anomaly','nw',d.data,'red');
         }else throw new Error(d.message);
-      }catch(e){setToolState('udp','error','Error');addLog('error','UDP scan failed: '+e.message);showToast('UDP scan failed',e.message,'red');renderError(e.message);}
+      }catch(e){finishTool('nw','udp','Failed','error');}
     }
 
     async function runVulnOS(){
-      const target=getTarget();
-      setToolState('os','running','Fingerprinting…');addLog('info',`detect_os_fingerprinting("${target}") invoked`);
+      const target=document.getElementById('target-input').value;
+      startTool('nw','os','Fingerprinting…');
       try{
-        const r=await fetch(API+'/vuln/os',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(180000)});
-        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        const r=await fetch(API+'/vuln/os',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})});
+        const d=await r.json();
         if(d.status==='success'){
           const vhosts=d.data.hosts_with_findings||0;
-          document.getElementById('stat-vuln').textContent=vhosts;
-          setToolState('os','success',vhosts+' host(s) flagged');
-          addLog(vhosts?'warn':'ok',`OS scan: ${vhosts} host(s) with risky OS`);
-          renderVulnResults('OS Fingerprinting','🖥️',d.data,'orange');
-          showToast('OS Scan Done',vhosts+' host(s) with risky OS',vhosts?'amber':'green');
+          document.getElementById('stat-nw-vuln').textContent=vhosts;
+          finishTool('nw','os','OS Detection Done');
+          renderVulnResults('OS Fingerprinting','nw',d.data,'orange');
         }else throw new Error(d.message);
-      }catch(e){setToolState('os','error','Error');addLog('error','OS scan failed: '+e.message);showToast('OS scan failed',e.message,'red');renderError(e.message);}
+      }catch(e){finishTool('nw','os','Failed','error');}
     }
 
     async function runVulnFirewall(){
-      const target=getTarget();
-      setToolState('fw','running','Testing evasion…');addLog('info',`detect_firewall_ids_evasion("${target}") invoked`);
+      const target=document.getElementById('target-input').value;
+      startTool('nw','fw','Testing Evasion…');
       try{
-        const r=await fetch(API+'/vuln/firewall',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target}),signal:AbortSignal.timeout(240000)});
-        const d=await r.json();totalRuns++;document.getElementById('stat-runs').textContent=totalRuns;
+        const r=await fetch(API+'/vuln/firewall',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target})});
+        const d=await r.json();
         if(d.status==='success'){
           const vhosts=d.data.hosts_with_findings||0;
-          document.getElementById('stat-vuln').textContent=vhosts;
-          setToolState('fw','success',vhosts+' host(s) flagged');
-          addLog(vhosts?'warn':'ok',`Firewall scan: ${vhosts} host(s) with bypass vulnerabilities`);
-          renderVulnResults('Firewall & IDS Evasion Detection','🔥',d.data,'pink');
-          showToast('Firewall Scan Done',vhosts+' host(s) with evasion bypass',vhosts?'red':'green');
+          document.getElementById('stat-nw-vuln').textContent=vhosts;
+          finishTool('nw','fw','Evasion Test Done');
+          renderVulnResults('Firewall Evasion','nw',d.data,'pink');
         }else throw new Error(d.message);
-      }catch(e){setToolState('fw','error','Error');addLog('error','Firewall scan failed: '+e.message);showToast('Firewall scan failed',e.message,'red');renderError(e.message);}
+      }catch(e){finishTool('nw','fw','Failed','error');}
     }
 
-    // ── Tool state ───────────────────────────────────────────────────────────
-    function setToolState(tool,state,label){
-      const btn=document.getElementById('btn-'+tool),spin=document.getElementById(tool+'-spinner');
-      const btnLbl=document.getElementById('btn-'+tool+'-label'),dot=document.getElementById(tool+'-status-dot');
-      const txt=document.getElementById(tool+'-status-text'),wrap=document.getElementById(tool+'-progress-wrap');
-      dot.className='tool-status-dot'+(state==='running'?' running':state==='success'?' success':state==='error'?' error':'');
-      txt.textContent=label;
-      if(state==='running'){btn.disabled=true;spin.classList.add('active');btnLbl.textContent=label;wrap.classList.add('active');}
-      else{btn.disabled=false;spin.classList.remove('active');btnLbl.textContent=state==='success'?'▶ Run Again':'▶ Retry';wrap.classList.remove('active');}
+    // ── AWS Runners ──────────────────────────────────────────────────────────
+    function getAWSConfig(){
+      return {
+        region: document.getElementById('aws-region').value,
+        role_arn: document.getElementById('aws-role-arn').value || null,
+        external_id: document.getElementById('aws-external-id').value || null,
+        resource_arn: document.getElementById('aws-resource-arn').value || null
+      };
     }
 
-    // ── Render helpers ───────────────────────────────────────────────────────
+    async function runAWSMetrics(){
+      startTool('aws','metrics','Loading AWS…');
+      try {
+        const config = getAWSConfig();
+        // Since the backend /aws/metrics is currently a GET without params in the handler (but simplified for demo),
+        // we'll still send the config if we were to transition it to POST.
+        // For now, let's keep it consistent with the others.
+        const r=await fetch(API+'/aws/metrics');
+        const d=await r.json();
+        if(d.status==='success'){
+          document.getElementById('stat-aws-ec2').textContent=d.data.ec2?.length||0;
+          document.getElementById('stat-aws-elb').textContent=d.data.elb?.length||0;
+          finishTool('aws','metrics','Metrics Done');
+          renderAWSMetricsResults(d.data);
+          addLog('ok', 'AWS metrics retrieved');
+        }else throw new Error(d.message);
+      }catch(e){finishTool('aws','metrics','Failed','error');}
+    }
+
+    async function runAWSAudit(){
+      startTool('aws','audit','Auditing AWS…');
+      try{
+        const config = getAWSConfig();
+        const r=await fetch(API+'/aws/audit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+        const d=await r.json();
+        if(d.status==='success'){
+          document.getElementById('stat-aws-drift').textContent=d.data.drift_detected?'YES':'0';
+          finishTool('aws','audit','Audit Done');
+          renderAWSAuditResults(d.data);
+        }else throw new Error(d.message);
+      }catch(e){finishTool('aws','audit','Failed','error');}
+    }
+
+    async function runAWSUpdateBaseline(){
+      startTool('aws','baseline','Saving AWS…');
+      try{
+        const config = getAWSConfig();
+        const r=await fetch(API+'/aws/update-baseline',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+        const d=await r.json();
+        if(d.status==='success'){
+          finishTool('aws','baseline','Baseline Saved');
+          renderAWSBaselineResult(d.message);
+        }else throw new Error(d.message);
+      }catch(e){finishTool('aws','baseline','Failed','error');}
+    }
+
+    async function runAWSVuln(){
+      startTool('aws','vuln','Scanning AWS…');
+      try{
+        const config = getAWSConfig();
+        const r=await fetch(API+'/aws/vuln',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+        const d=await r.json();
+        if(d.status==='success'){
+          const count=d.data.findings?.length||0;
+          document.getElementById('stat-aws-vuln').textContent=count;
+          finishTool('aws','vuln','Scan Done');
+          renderAWSVulnResults(d.data);
+        }else throw new Error(d.message);
+      }catch(e){finishTool('aws','vuln','Failed','error');}
+    }
+
+    // ── PQC Runners ──────────────────────────────────────────────────────────
+    async function runPQCTelemetry(){
+      const env=document.getElementById('pqc-env-select').value;
+      const resource_arn=document.getElementById('pqc-resource-arn').value || null;
+      startTool('pqc','pqc','Benchmarking…');
+      try{
+        const r=await fetch(API+'/pqc/collect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({env, resource_arn})});
+        const d=await r.json();
+        if(d.status==='success'){
+          const algo=d.data.algorithms?.kyber512||{};
+          document.getElementById('stat-pqc-kem').textContent=(algo.avg_time_ms||0).toFixed(2)+'ms';
+          document.getElementById('stat-pqc-ready').textContent=d.data.summary?.pqc_ready?'YES':'NO';
+          document.getElementById('stat-pqc-env').textContent=d.data.environment;
+          finishTool('pqc','pqc','Telemetry Done');
+          renderPQCResults(d.data);
+          addLog('ok', `PQC telemetry collected for ${env}`);
+        }else throw new Error(d.message);
+      }catch(e){finishTool('pqc','pqc','Failed','error');}
+    }
+
+    // ── Tool Management ──────────────────────────────────────────────────────
+    function startTool(tab,id,label){
+      runs[tab]++;
+      document.getElementById('stat-'+tab+'-runs').textContent=runs[tab];
+      const btn=document.getElementById('btn-'+id);
+      if(btn) btn.disabled=true;
+      showToast('Running Tool', label, 'cyan');
+    }
+    function finishTool(tab,id,label,status='success'){
+      const btn=document.getElementById('btn-'+id);
+      if(btn) btn.disabled=false;
+      showToast(status==='success'?'Tool Finished':'Tool Failed', label, status==='success'?'green':'red');
+    }
+
+    // ── Result Renderers ─────────────────────────────────────────────────────
+    function setRes(tab,title,badge,html){
+      document.getElementById(tab+'-results-tool-name').textContent=title;
+      document.getElementById(tab+'-results-badge').textContent=badge;
+      document.getElementById(tab+'-results-body').innerHTML=html;
+    }
+    function clearResults(tab){
+      document.getElementById(tab+'-results-tool-name').textContent='Output';
+      document.getElementById(tab+'-results-badge').textContent='—';
+      document.getElementById(tab+'-results-body').innerHTML='<div class="results-empty"><span>Cleared</span></div>';
+    }
+
     function renderScanResults(data){
-      setResultsHeader('Scan Network',Object.keys(data).length+' device(s)');
-      const ips=Object.keys(data);
-      if(!ips.length){setResultsBody('<div class="results-empty"><div class="empty-icon">📭</div><span>No devices found on subnet</span></div>');return;}
       let rows='';
-      ips.forEach(ip=>{
-        const d=data[ip],ports=d.open_ports&&d.open_ports.length?d.open_ports.map(p=>'<span class="tag tag-port">'+p+'</span>').join(''):'<span style="color:var(--text-faint)">none</span>';
-        rows+='<tr><td>'+ip+'</td><td>'+(d.hostname||ip)+'</td><td style="color:var(--text-muted)">'+(d.mac||'?')+'</td><td style="color:var(--text-muted)">'+(d.vendor||'Unknown')+'</td><td>'+ports+'</td></tr>';
-      });
-      setResultsBody('<table class="device-table"><thead><tr><th>IP Address</th><th>Hostname</th><th>MAC</th><th>Vendor</th><th>Open Ports</th></tr></thead><tbody>'+rows+'</tbody></table>');
+      for(const[ip,d]of Object.entries(data)){
+        const p=(d.open_ports||[]).map(x=>'<span class="tag tag-port">'+x+'</span>').join('');
+        rows+='<tr><td>'+ip+'</td><td>'+(d.hostname||'—')+'</td><td>'+(d.vendor||'—')+'</td><td>'+p+'</td></tr>';
+      }
+      setRes('nw','Scan Network',Object.keys(data).length+' hosts','<table class="device-table"><thead><tr><th>IP</th><th>Host</th><th>Vendor</th><th>Ports</th></tr></thead><tbody>'+rows+'</tbody></table>');
     }
 
-    function renderAuditOk(raw){
-      setResultsHeader('Audit Network','CLEAN');
-      setResultsBody('<div class="alert alert-success"><div class="alert-icon">✓</div><span>'+(raw||'No drift detected.')+'</span></div>');
+    function renderAuditResults(rep,raw){
+      let html='<div class="drift-grid">'
+        +'<div class="drift-block"><div class="drift-count">'+Object.keys(rep.new_devices_detected||{}).length+'</div><div class="drift-label">New</div></div>'
+        +'<div class="drift-block"><div class="drift-count">'+Object.keys(rep.missing_devices||{}).length+'</div><div class="drift-label">Missing</div></div>'
+        +'<div class="drift-block"><div class="drift-count">'+Object.keys(rep.port_changes_detected||{}).length+'</div><div class="drift-label">Changes</div></div>'
+        +'</div><div class="raw-output">'+escHtml(raw)+'</div>';
+      setRes('nw','Audit Drift','REPORT',html);
+    }
+    function renderAuditOk(raw){setRes('nw','Audit Drift','CLEAN','<div class="alert alert-success"><span>✓ No drift detected</span></div>');}
+    function renderBaselineResult(msg){setRes('nw','Update Baseline','OK','<div class="alert alert-success"><span>'+escHtml(msg)+'</span></div>');}
+
+    function renderVulnResults(title,tab,data,color){
+      let findingsHtml = '';
+      if (data.findings) {
+        for (const [host, info] of Object.entries(data.findings)) {
+          findingsHtml += `
+            <div class="vuln-host-block">
+              <div class="vuln-host-header" onclick="this.parentElement.querySelector('.vuln-host-body').classList.toggle('open'); this.querySelector('.chevron').classList.toggle('open')">
+                <span class="vuln-host-ip">${info.hostname || host}</span>
+                <span class="sev-pill sev-${(info.overall_risk || 'info').toLowerCase()}">${info.overall_risk || 'INFO'}</span>
+                <span class="chevron">▶</span>
+              </div>
+              <div class="vuln-host-body collapsible-body">
+                ${(info.vulnerabilities || []).map(v => `
+                  <div class="vuln-finding">
+                    <div class="vuln-finding-title">${v.service || 'Unknown'} (Port ${v.port || '?'})</div>
+                    <div class="vuln-finding-desc">${v.description || 'No description provided.'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+      }
+      
+      let html = `
+        <div style="margin-bottom:15px">
+            <button class="btn btn-primary" onclick="this.parentElement.nextElementSibling.style.display='block'; this.parentElement.nextElementSibling.nextElementSibling.style.display='none'">List View</button>
+            <button class="btn btn-ghost" onclick="this.parentElement.nextElementSibling.style.display='none'; this.parentElement.nextElementSibling.nextElementSibling.style.display='block'">JSON View</button>
+        </div>
+        <div class="vuln-list-view">${findingsHtml || '<div class="results-empty">No findings</div>'}</div>
+        <div class="raw-output" style="display:none">${escHtml(JSON.stringify(data,null,2))}</div>
+      `;
+      setRes(tab,title, (data.hosts_with_findings || 0) + ' flagged', html);
     }
 
-    function renderAuditResults(report,raw){
-      const newDev=report.new_devices_detected||{},missing=report.missing_devices||{},changed=report.port_changes_detected||{};
-      const total=Object.keys(newDev).length+Object.keys(missing).length+Object.keys(changed).length;
-      setResultsHeader('Audit Network',total+' issue(s)');
-      let html='<div class="alert alert-warning"><div class="alert-icon">⚠️</div><span><strong>Drift Detected</strong> — '+total+' issue(s) found.</span></div>'
-        +'<div class="drift-grid">'
-        +'<div class="drift-block" style="background:var(--amber-dim);border-color:rgba(245,158,11,.3)"><div class="drift-count" style="color:var(--amber)">'+Object.keys(newDev).length+'</div><div class="drift-label">New Devices</div></div>'
-        +'<div class="drift-block" style="background:var(--red-dim);border-color:rgba(239,68,68,.3)"><div class="drift-count" style="color:var(--red)">'+Object.keys(missing).length+'</div><div class="drift-label">Missing Devices</div></div>'
-        +'<div class="drift-block" style="background:var(--purple-dim);border-color:rgba(139,92,246,.3)"><div class="drift-count" style="color:var(--purple)">'+Object.keys(changed).length+'</div><div class="drift-label">Port Changes</div></div>'
-        +'</div>';
-      if(Object.keys(newDev).length){
-        html+='<div style="margin-bottom:18px"><div class="section-title" style="font-size:12px;margin-bottom:10px">New Devices Detected</div><table class="device-table"><thead><tr><th>IP</th><th>MAC</th><th>Vendor</th><th>Open Ports</th></tr></thead><tbody>';
-        for(const[ip,info]of Object.entries(newDev)){const ports=(info.open_ports||[]).map(p=>'<span class="tag tag-new">'+p+'</span>').join('')||'none';html+='<tr><td>'+ip+' <span class="tag tag-new">NEW</span></td><td>'+(info.mac||'?')+'</td><td>'+(info.vendor||'?')+'</td><td>'+ports+'</td></tr>';}
-        html+='</tbody></table></div>';
-      }
-      if(Object.keys(missing).length){
-        html+='<div style="margin-bottom:18px"><div class="section-title" style="font-size:12px;margin-bottom:10px">Missing Devices</div><table class="device-table"><thead><tr><th>IP</th><th>MAC</th><th>Last Known Ports</th></tr></thead><tbody>';
-        for(const[ip,info]of Object.entries(missing)){const ports=(info.open_ports||[]).map(p=>'<span class="tag tag-removed">'+p+'</span>').join('')||'none';html+='<tr><td>'+ip+' <span class="tag tag-missing">MISSING</span></td><td>'+(info.mac||'?')+'</td><td>'+ports+'</td></tr>';}
-        html+='</tbody></table></div>';
-      }
-      if(Object.keys(changed).length){
-        html+='<div style="margin-bottom:18px"><div class="section-title" style="font-size:12px;margin-bottom:10px">Port Changes</div><table class="device-table"><thead><tr><th>IP</th><th>MAC</th><th>Added Ports</th><th>Closed Ports</th></tr></thead><tbody>';
-        for(const[ip,info]of Object.entries(changed)){const added=(info.added_ports||[]).map(p=>'<span class="tag tag-added">'+p+'</span>').join('')||'none',removed=(info.closed_ports||[]).map(p=>'<span class="tag tag-removed">'+p+'</span>').join('')||'none';html+='<tr><td>'+ip+'</td><td>'+(info.mac||'?')+'</td><td>'+added+'</td><td>'+removed+'</td></tr>';}
-        html+='</tbody></table></div>';
-      }
-      html+='<details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);user-select:none">Raw JSON Response</summary><div class="raw-output" style="margin-top:8px">'+escHtml(raw||'')+'</div></details>';
-      setResultsBody(html);
+    function renderAWSMetricsResults(data){
+      setRes('aws','AWS Metrics','COLLECTED','<div class="raw-output">'+escHtml(JSON.stringify(data,null,2))+'</div>');
+    }
+    function renderAWSAuditResults(data){
+      setRes('aws','AWS Audit',data.drift_detected?'DRIFT':'CLEAN','<div class="raw-output">'+escHtml(JSON.stringify(data,null,2))+'</div>');
+    }
+    function renderAWSBaselineResult(msg){setRes('aws','AWS Baseline','OK','<div class="alert alert-success"><span>'+escHtml(msg)+'</span></div>');}
+    function renderAWSVulnResults(data){
+      setRes('aws','AWS Vulnerabilities',data.vulnerabilities?.length||0+' found','<div class="raw-output">'+escHtml(JSON.stringify(data,null,2))+'</div>');
     }
 
-    function renderVulnResults(title, icon, data, accentColor){
-      const findings = data.findings||{};
-      const hosts = Object.keys(findings);
-      const plan = data.remediation_plan||[];
-      const techniques = data.techniques_used||[];
-
-      setResultsHeader(title, (data.hosts_with_findings||0)+' host(s) flagged');
-
-      // Count severities
-      let critical=0,high=0,medium=0,info=0;
-      hosts.forEach(h=>{
-        const vulns = findings[h].vulnerabilities || findings[h].issues || [];
-        vulns.forEach(v=>{
-          const sev=(v.risk||v.severity||'').toUpperCase();
-          if(sev==='CRITICAL')critical++;
-          else if(sev==='HIGH')high++;
-          else if(sev==='MEDIUM')medium++;
-          else info++;
-        });
-      });
-
-      let html='';
-
-      if(techniques.length){
-        html+='<div class="alert alert-info"><div class="alert-icon">🔬</div><span><strong>Techniques:</strong> '+escHtml(techniques.join(' · '))+'</span></div>';
-      }
-
-      if(!hosts.length){
-        html+='<div class="alert alert-success"><div class="alert-icon">✓</div><span>No vulnerabilities found with this scan type.</span></div>';
-      } else {
-        html+='<div class="alert alert-warning"><div class="alert-icon">⚠️</div><span><strong>'+hosts.length+' host(s)</strong> with findings detected.</span></div>';
-        html+='<div class="vuln-summary-row">'
-          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--red)">'+critical+'</div><div class="vscard-lbl">Critical</div></div>'
-          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--orange)">'+high+'</div><div class="vscard-lbl">High</div></div>'
-          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--amber)">'+medium+'</div><div class="vscard-lbl">Medium</div></div>'
-          +'<div class="vuln-summary-card"><div class="vscard-val" style="color:var(--cyan)">'+info+'</div><div class="vscard-lbl">Info</div></div>'
-          +'</div>';
-
-        hosts.forEach(ip=>{
-          const hd=findings[ip];
-          const vulns=hd.vulnerabilities||hd.issues||[];
-          const overallSev=(hd.overall_risk||'INFO').toUpperCase();
-          const sevCls=sevClass(overallSev);
-          const hostId='host-'+ip.replace(/\./g,'-');
-
-          html+='<div class="vuln-host-block">'
-            +'<div class="vuln-host-header" onclick="toggleCollapse(\''+hostId+'\')">'
-            +'<span class="sev-pill '+sevCls+'">'+overallSev+'</span>'
-            +'<span class="vuln-host-ip">'+escHtml(ip)+'</span>'
-            +'<span class="vuln-host-name">'+escHtml(hd.hostname||ip)+'</span>'
-            +'<span style="margin-left:auto;font-size:11px;color:var(--text-muted);font-family:monospace">'+vulns.length+' finding(s)</span>'
-            +'<span class="chevron" id="chev-'+hostId+'">▶</span>'
-            +'</div>'
-            +'<div class="collapsible-body open" id="'+hostId+'">'
-            +'<div class="vuln-host-body">';
-
-          vulns.forEach(v=>{
-            const sev2=(v.risk||v.severity||'INFO').toUpperCase();
-            const ports=(v.ports_exposed||[v.port].filter(Boolean)).map(p=>'<span class="tag tag-port">'+p+'</span>').join('');
-            const remediation=v.remediation||[];
-            html+='<div class="vuln-finding">'
-              +'<div class="vuln-finding-title"><span class="sev-pill '+sevClass(sev2)+'">'+sev2+'</span>'+escHtml(v.technique||v.service||('Port '+v.port))+'</div>'
-              +'<div class="vuln-finding-desc">'+escHtml(v.description||'')+'</div>';
-            if(ports) html+='<div class="vuln-ports">Ports: '+ports+'</div>';
-            if(remediation.length){
-              html+='<ul class="remediation-list">';
-              remediation.forEach(r=>{html+='<li>'+escHtml(r)+'</li>';});
-              html+='</ul>';
-            }
-            html+='</div>';
-          });
-
-          // Host-level remediation
-          if(hd.remediation&&hd.remediation.length){
-            html+='<div class="remediation-plan">'
-              +'<div class="remediation-title">🛠️ Host Remediation Steps</div>'
-              +'<ul class="remediation-list">';
-            hd.remediation.forEach(r=>{html+='<li>'+escHtml(r)+'</li>';});
-            html+='</ul></div>';
-          }
-          // EOL / OS info
-          if(hd.os_name){
-            html+='<div style="font-size:12px;color:var(--text-muted);font-family:monospace;margin-top:8px">OS: <strong style="color:var(--text)">'+escHtml(hd.os_name)+'</strong> ('+escHtml(hd.os_family)+') — '+hd.accuracy_pct+'% accuracy'+(hd.eol?' <span class="tag tag-removed">EOL</span>':'')+'</div>';
-            if(hd.eol_details) html+='<div style="font-size:11px;color:var(--amber);margin-top:4px">'+escHtml(hd.eol_details)+'</div>';
-          }
-
-          html+='</div></div></div>';
-        });
-      }
-
-      // Global remediation plan
-      if(plan.length){
-        html+='<div class="remediation-plan" style="margin-top:18px">'
-          +'<div class="remediation-title">📋 Global Remediation Plan</div>'
-          +'<ul class="remediation-list">';
-        plan.forEach(p=>{html+='<li>'+escHtml(p)+'</li>';});
-        html+='</ul></div>';
-      }
-
-      // Raw JSON toggle
-      html+='<details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);user-select:none">Raw JSON Response</summary><div class="raw-output" style="margin-top:8px">'+escHtml(JSON.stringify(data,null,2))+'</div></details>';
-      setResultsBody(html);
+    function renderPQCResults(data){
+      setRes('pqc','PQC Telemetry','RESULTS','<div class="raw-output">'+escHtml(JSON.stringify(data,null,2))+'</div>');
     }
 
-    function sevClass(sev){
-      if(sev==='CRITICAL')return 'sev-critical';
-      if(sev==='HIGH')return 'sev-high';
-      if(sev==='MEDIUM')return 'sev-medium';
-      if(sev==='LOW')return 'sev-low';
-      return 'sev-info';
-    }
-
-    function toggleCollapse(id){
-      const body=document.getElementById(id);
-      const chev=document.getElementById('chev-'+id);
-      if(!body)return;
-      body.classList.toggle('open');
-      if(chev) chev.classList.toggle('open');
-    }
-
-    function renderBaselineResult(msg){setResultsHeader('Update Baseline','SAVED');setResultsBody('<div class="alert alert-success"><div class="alert-icon">💾</div><span>'+escHtml(msg)+'</span></div>');}
-    function renderError(msg){setResultsHeader('Error','ERR');setResultsBody('<div class="alert alert-error"><div class="alert-icon">❌</div><span>'+escHtml(msg)+'</span></div><p style="margin-top:12px;font-size:13px;color:var(--text-muted)">Start the server: <code style="font-family:monospace;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px">python network_audit_server.py</code></p>');}
-    function clearResults(){document.getElementById('results-tool-name').textContent='Output';document.getElementById('results-badge').textContent='—';document.getElementById('results-body').innerHTML='<div class="results-empty"><div class="empty-icon">🌐</div><span>Run a tool above to see results here</span></div>';}
-    function setResultsHeader(name,badge){document.getElementById('results-tool-name').textContent=name;document.getElementById('results-badge').textContent=badge;}
-    function setResultsBody(html){document.getElementById('results-body').innerHTML=html;}
-
-    // ── Log ──────────────────────────────────────────────────────────────────
+    // ── Core Utils ───────────────────────────────────────────────────────────
     function addLog(type,msg){
-      const body=document.getElementById('log-body'),entry=document.createElement('div');
-      entry.className='log-entry';
-      const ts=new Date().toLocaleTimeString('en-US',{hour12:false});
-      const cls={info:'log-label-info',ok:'log-label-ok',warn:'log-label-warn',error:'log-label-error'}[type]||'log-label-info';
-      entry.innerHTML='<span class="log-ts">'+ts+'</span><span class="log-label '+cls+'">'+type.toUpperCase()+'</span><span class="log-msg">'+escHtml(msg)+'</span>';
-      body.appendChild(entry);body.scrollTop=body.scrollHeight;
-      while(body.children.length>80)body.removeChild(body.firstChild);
+      console.log('Activity Log Entry:', type, msg);
+      const b=document.getElementById('log-body'),e=document.createElement('div');
+      e.className='log-entry';
+      e.innerHTML='<span class="log-ts">'+new Date().toLocaleTimeString()+'</span><span class="log-label log-label-'+type+'">'+type.toUpperCase()+'</span><span class="log-msg">'+escHtml(msg)+'</span>';
+      if(b) b.prepend(e);
+      else console.error('log-body not found');
     }
-    function clearLog(){document.getElementById('log-body').innerHTML='';addLog('info','Log cleared');}
-
-    // ── Toast ─────────────────────────────────────────────────────────────────
-    function showToast(title,msg,color){
-      const colorMap={green:'#10b981',red:'#ef4444',amber:'#f59e0b',cyan:'#00d4ff',purple:'#8b5cf6',orange:'#f97316',pink:'#ec4899'};
-      const el=document.createElement('div');el.className='toast';el.style.borderLeftColor=colorMap[color]||colorMap.cyan;
-      el.innerHTML='<div style="flex:1"><div style="font-weight:600;font-size:13px">'+escHtml(title)+'</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">'+escHtml(msg)+'</div></div>';
-      document.getElementById('toast-container').appendChild(el);
-      setTimeout(()=>{el.classList.add('exit');setTimeout(()=>el.remove(),300);},4800);
+    function clearLog(){document.getElementById('log-body').innerHTML='';}
+    function showToast(t,m,c){
+      const e=document.createElement('div');e.className='toast';e.style.borderLeftColor='var(--'+c+')';
+      e.innerHTML='<div><strong>'+escHtml(t)+'</strong><div>'+escHtml(m)+'</div></div>';
+      document.getElementById('toast-container').appendChild(e);
+      setTimeout(()=>e.remove(),4000);
     }
-
-    function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
     checkHealth();
-    setInterval(checkHealth,30000);
+    setInterval(checkHealth,10000);
   </script>
 </body>
 </html>
